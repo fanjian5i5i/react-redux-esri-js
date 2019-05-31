@@ -1,2 +1,3 @@
 # react-redux-esri-js
-Boilerplate for react redux esri js api 4.x
+Boilerplate for react redux esri js api 4.x with Material-UI framework.
+
