@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Map,loadModules } from '@esri/react-arcgis';
-
+import SketchWidget from './SketchWidget';
 import { connect } from 'react-redux';
 import { updateView,updateMap } from '../redux/actions';
 
@@ -30,6 +30,7 @@ class MapView extends React.Component {
 
           const layer = new FeatureLayer({
             // URL to the service
+            id:"parcel",
             url: "https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/services/Census_2010_Tracts/FeatureServer/0"
           });
 
@@ -91,14 +92,33 @@ class MapView extends React.Component {
     handleOnClick(e){
       var that = this;
       console.log(e.mapPoint);
+      that.state.view.graphics.removeAll();
       that.props.mapState.view.hitTest(e).then(function (response) {
           if (response.results.length) {
             var graphic = response.results.filter(function (result) {
               // check if the graphic belongs to the layer of interest
               return result.graphic.layer === that.state.layer;
+
+
+
             })[0].graphic;
             //
             // // do something with the result graphic
+            loadModules(["esri/Graphic"]).then(([ Graphic ]) => {
+              const g = new Graphic({
+                geometry: graphic.geometry,
+                symbol: {
+                    type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+                    color: [ 51,51, 204, 0.9 ],
+                    style: "solid",
+                    outline: {  // autocasts as new SimpleLineSymbol()
+                      color: "white",
+                      width: 1
+                    }
+                }
+              });
+              that.state.view.graphics.add(g);
+            });
             console.log(graphic.attributes);
           }
         });
@@ -119,6 +139,7 @@ class MapView extends React.Component {
               onClick = {this.handleOnClick.bind(this)}
               onLoad={this.handleMapLoad.bind(this)}
           >
+          <SketchWidget/>
           </Map>
         );
     }
