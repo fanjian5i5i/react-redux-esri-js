@@ -109,10 +109,10 @@ class MapView extends React.Component {
                 geometry: graphic.geometry,
                 symbol: {
                     type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-                    color: [ 51,51, 204, 0.9 ],
+                    color: [ 51,51, 204, 0.1 ],
                     style: "solid",
                     outline: {  // autocasts as new SimpleLineSymbol()
-                      color: "white",
+                      color: [ 51,51, 204, 0.9 ],
                       width: 1
                     }
                 }
