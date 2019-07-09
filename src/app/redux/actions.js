@@ -12,3 +12,10 @@ export function updateMap(map) {
     map:map
   };
 }
+
+export function updateSelected(selected) {
+  return {
+    type: ActionTypes.UPDATE_SELECTED,
+    selected:selected
+  };
+}

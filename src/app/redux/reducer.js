@@ -3,7 +3,8 @@ import * as ActionTypes from './actionTypes';
 
 const initMapState = {
   map:null,
-  view:null
+  view:null,
+  selected:null
 };
 
 const initGeneralState = {
@@ -15,6 +16,8 @@ function general(state = initGeneralState, action) {
   if (typeof state === 'undefined') {
     return initGeneralState;
   }
+
+
   return state
 }
 
@@ -33,6 +36,12 @@ function map(state = initMapState, action) {
       return {
         ...state,
         map: action.map,
+      };
+    case ActionTypes.UPDATE_SELECTED:
+      console.log(action)
+      return {
+        ...state,
+        selected: action.selected,
       };
     default:
       return state;

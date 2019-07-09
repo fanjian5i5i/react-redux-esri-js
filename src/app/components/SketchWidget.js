@@ -2,7 +2,7 @@ import * as React from 'react';
 import { loadModules } from '@esri/react-arcgis';
 
 import { connect } from 'react-redux';
-import { updateView,updateMap } from '../redux/actions';
+import { updateView,updateMap,updateSelected } from '../redux/actions';
 
 
 class SketchWidget extends React.Component {
@@ -49,6 +49,7 @@ class SketchWidget extends React.Component {
               .then(function(response){
                 console.log(response);
                 if(response.features.length > 0){
+                  let selected = []
                   response.features.forEach((record) =>{
                     console.log(record)
                     const graphic = new Graphic({
@@ -63,9 +64,11 @@ class SketchWidget extends React.Component {
                           }
                       }
                     });
-
+                    selected.push(record.attributes.TRACTCE10);
                     that.props.view.graphics.add(graphic);
-                  })
+                  });
+
+                  that.props.dispatch(updateSelected(selected))
                 }
 
 

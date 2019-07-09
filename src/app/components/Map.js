@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Map,loadModules } from '@esri/react-arcgis';
 import SketchWidget from './SketchWidget';
 import { connect } from 'react-redux';
-import { updateView,updateMap } from '../redux/actions';
+import { updateView,updateMap,updateSelected } from '../redux/actions';
 
 
 
@@ -120,6 +120,7 @@ class MapView extends React.Component {
               that.state.view.graphics.add(g);
             });
             console.log(graphic.attributes);
+            that.props.dispatch(updateSelected([graphic.attributes.TRACTCE10]))
           }
         });
     }
