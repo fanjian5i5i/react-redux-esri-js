@@ -23,6 +23,10 @@ var config = {
     },
 
    },
+  node: { fs: 'empty' },
+  externals:[{
+      xmlhttprequest: '{XMLHttpRequest:XMLHttpRequest}'
+  }],
   module:{
     rules:[
       {
