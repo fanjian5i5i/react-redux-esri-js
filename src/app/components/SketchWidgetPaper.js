@@ -132,7 +132,7 @@ function SketchWidgetPaper(props) {
         <br/>
 
 
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={12}>
         <Grid container spacing={1} direction="column" alignItems="center">
           <Grid item>
             <ButtonGroup size="small" aria-label="Small outlined button group">
