@@ -8,7 +8,7 @@ const initMapState = {
 };
 
 const initGeneralState = {
-  placeholder:"placeholder"
+  drawerOpen:false
 
 };
 
@@ -16,6 +16,13 @@ function general(state = initGeneralState, action) {
   if (typeof state === 'undefined') {
     return initGeneralState;
   }
+  switch (action.type) {
+    case ActionTypes.UPDATE_DRAWER:
+      return {
+        ...state,
+        drawerOpen: action.open,
+      };
+    }
 
 
   return state
@@ -25,7 +32,7 @@ function map(state = initMapState, action) {
   if (typeof state === 'undefined') {
     return initialState;
   }
-  console.log(action.type)
+
   switch (action.type) {
     case ActionTypes.UPDATE_VIEW:
       return {

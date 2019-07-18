@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Map,loadModules } from '@esri/react-arcgis';
-import SketchWidget from './SketchWidget';
+// import SketchWidget from './SketchWidget';
 import { connect } from 'react-redux';
 import { updateView,updateMap,updateSelected } from '../redux/actions';
 
@@ -128,6 +128,7 @@ class MapView extends React.Component {
 
     }
     render() {
+    //  <SketchWidget/>
         return (
           <Map
               style={{ width: '100vw', height: window.innerHeight - 64}}
@@ -140,7 +141,7 @@ class MapView extends React.Component {
               onClick = {this.handleOnClick.bind(this)}
               onLoad={this.handleMapLoad.bind(this)}
           >
-          <SketchWidget/>
+
           </Map>
         );
     }

@@ -7,35 +7,59 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
+import { connect } from 'react-redux';
+import { updateDrawer } from '../redux/actions';
+
+const drawerWidth = 360;
+
+
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
   },
+  appBar: {
+    marginLeft: drawerWidth,
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+    },
+  },
   menuButton: {
     marginRight: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    },
   },
   title: {
     flexGrow: 1,
   },
 }));
 
-function ButtonAppBar() {
+function AppBarDrawer(props) {
   const classes = useStyles();
+
+  const handleOpen = () =>{
+
+    props.dispatch(updateDrawer(!props.generalState.drawerOpen))
+  }
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="Menu">
+        <Typography variant="h6" className={classes.title}>
+          Demographic Viewer
+        </Typography>
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="Menu" onClick={handleOpen}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            News
-          </Typography>
-          <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
     </div>
   );
 }
 
-export default ButtonAppBar;
+
+const mapStateToProps = state => ({
+  generalState: state.general,
+});
+
+export default connect(mapStateToProps)(AppBarDrawer);

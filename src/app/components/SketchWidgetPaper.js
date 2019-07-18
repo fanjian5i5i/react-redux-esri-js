@@ -77,11 +77,9 @@ function SketchWidgetPaper(props) {
 
 
   let center = { lat: 42.3601, lng: -71.0589 };
-  let values = ["B01001_003E", "B01001_004E", "B01001_005E","B01001_006E", "B01001_007E", "B01001_008E","B01001_009E", "B01001_010E",
-"B01001_011E", "B01001_012E", "B01001_013E","B01001_014E", "B01001_015E", "B01001_016E","B01001_017E", "B01001_018E",
-"B01001_019E", "B01001_020E", "B01001_021E","B01001_022E", "B01001_023E", "B01001_024E","B01001_025E"];
+  let values = ["B01001_003E"];
   let Args = {
-      "vintage": 2016,
+      "vintage": 2017,
       "geoHierarchy": {
         "county": center,
         "tract": selected ? selected.toString() : "*"

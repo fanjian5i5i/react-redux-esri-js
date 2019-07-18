@@ -19,3 +19,10 @@ export function updateSelected(selected) {
     selected:selected
   };
 }
+
+export function updateDrawer(open) {
+  return {
+    type: ActionTypes.UPDATE_DRAWER,
+    open:open
+  };
+}
