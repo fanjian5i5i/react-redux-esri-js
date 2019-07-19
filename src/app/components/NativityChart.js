@@ -7,14 +7,18 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-
-
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import SaveIcon from '@material-ui/icons/SaveAlt';
 import { connect } from 'react-redux';
+
+
 import { updateView,updateMap,updateSelected } from '../redux/actions';
 
 import {Pie} from 'react-chartjs-2';
 
 import census from 'citysdk';
+import { ExportToCsv } from 'export-to-csv';
 
 class NativityChart extends React.Component{
 
@@ -108,6 +112,31 @@ class NativityChart extends React.Component{
           props.dispatch(updateSelected(""))
 
       }
+      handleDownload(){
+        let that = this;
+        const options = {
+          fieldSeparator: ',',
+          quoteStrings: '"',
+          decimalSeparator: '.',
+          showLabels: true,
+          showTitle: true,
+          title: 'Nativity',
+          useTextFile: false,
+          useBom: true,
+          useKeysAsHeaders: true,
+          // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
+        };
+        let data = {"tract_id":that.props.id[0]};
+        for(var i = 0; i<this.state.data.datasets[0].data.length;i++){
+          // let record = {this.state.data.labels[i]:this.state.data.datasets[0].data[i]};
+
+          data[that.state.data.labels[i]] = that.state.data.datasets[0].data[i]
+        };
+        console.log(data);
+        const csvExporter = new ExportToCsv(options);
+
+        csvExporter.generateCsv([data]);
+      }
 
         render() {
           let data = this.state.data;
@@ -136,7 +165,7 @@ class NativityChart extends React.Component{
                       <TableCell align="right">{data.datasets?data.datasets[0].data[2]:0}</TableCell>
                     </TableRow>
                     <TableRow>
-                    <TableCell colSpan={4}>
+                    <TableCell colSpan={4} >
                     <Pie
                       data={this.state.data != ""?this.state.data:[]}
                       width={80}
@@ -145,7 +174,16 @@ class NativityChart extends React.Component{
                         maintainAspectRatio: true
                       }}
                     /></TableCell>
-
+                    </TableRow>
+                    <TableRow>
+                    <TableCell colSpan={3}>
+                      Download as CSV
+                    </TableCell>
+                    <TableCell >
+                      <IconButton aria-label="Delete" onClick={()=>this.handleDownload()}>
+                        <SaveIcon />
+                      </IconButton>
+                    </TableCell>
                     </TableRow>
 
                 </TableBody>
