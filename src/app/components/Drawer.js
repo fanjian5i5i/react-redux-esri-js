@@ -23,7 +23,8 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { updateDrawer } from '../redux/actions';
 
-import NativityChart from './NativityChart'
+import NativityChart from './NativityChart';
+import AgeChart from './AgeChart'
 
 
 const drawerWidth = 360;
@@ -76,7 +77,8 @@ function ResponsiveDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState('one');
-  const [nativityOpen, setNativityOpen] = React.useState(true);
+  const [nativityOpen, setNativityOpen] = React.useState(false);
+  const [ageOpen, setAgeOpen] = React.useState(true);
   const [innerWidth]= React.useState(window.innerWidth);
   const handleOpen = () =>{
     props.dispatch(updateDrawer(!props.generalState.drawerOpen))
@@ -95,6 +97,9 @@ function ResponsiveDrawer(props) {
     switch (code) {
       case "nativity":
         setNativityOpen(!nativityOpen);
+        break;
+      case "age":
+        setAgeOpen(!ageOpen);
         break;
       default:
 
@@ -128,6 +133,18 @@ function ResponsiveDrawer(props) {
 
           </Collapse>
           <Divider/>
+          <ListItem button onClick={handleClickCode("age")} className={classes.title}>
+            <ListItemText inset primary="Age by sex" className={classes.title}/>
+              {ageOpen ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Divider />
+            <Collapse in={ageOpen} timeout="auto">
+
+                <AgeChart id={props.mapState.selected}/>
+
+
+            </Collapse>
+            <Divider/>
       </List>
     </div>
   );
