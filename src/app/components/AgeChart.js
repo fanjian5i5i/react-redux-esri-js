@@ -17,6 +17,9 @@ import { updateView,updateMap,updateSelected } from '../redux/actions';
 
 import {HorizontalBar} from 'react-chartjs-2';
 
+
+import Chart from 'react-apexcharts'
+
 import census from 'citysdk';
 import { ExportToCsv } from 'export-to-csv';
 
@@ -25,7 +28,78 @@ class AgeChart extends React.Component{
       constructor(props) {
           super(props);
           this.state = {
-              data:[]
+              data:[],
+              series: [{
+                  name: 'Males',
+                  data: [0.4, 0.65, 0.76, 0.88, 1.5, 2.1, 2.9, 3.8, 3.9, 4.2, 4, 4.3, 4.1, 4.2, 4.5, 3.9, 3.5, 3]
+              },
+              {
+                  name: 'Females',
+                  data: [-0.8, -1.05, -1.06, -1.18, -1.4, -2.2, -2.85, -3.7, -3.96, -4.22, -4.3, -4.4, -4.1, -4, -4.1, -3.4, -3.1, -2.8]
+              }],
+              options: {
+                chart: {
+                  height: 440,
+                  type: 'bar',
+                  stacked: true
+                },
+                colors: ['#008FFB','#FF4560'],
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        barHeight: '80%',
+
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: 1,
+                    colors: ["#fff"]
+                },
+
+                grid: {
+                    xaxis: {
+                        showLines: false
+                    }
+                },
+                yaxis: {
+                    // min: -1000,
+                    // max: 1000,
+                    title: {
+                       // text: 'Age',
+                    },
+                },
+                tooltip: {
+                  shared: false,
+                    x: {
+                        formatter: function(val) {
+                            return val
+                        }
+                    },
+                    y: {
+                        formatter: function(val) {
+                            return Math.abs(val)
+                        }
+                    }
+                },
+                title: {
+                    text: 'Age by Sex'
+                },
+                xaxis: {
+                  categories: ['85+', '80-84', '75-79', '70-74', '65-69', '60-64', '55-59', '50-54', '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '15-19', '10-14', '5-9', '0-4'],
+                  title: {
+                    text:"Population"
+                  },
+                  labels: {
+                    formatter: function(val) {
+                      return val
+                    }
+                  }
+                },
+              },
+
           };
       }
       handleGetCensus(id){
@@ -45,33 +119,41 @@ class AgeChart extends React.Component{
           census(Args,
             (err, res) => {
               console.log(res);
+              let series =  [{
+                  name: 'Males',
+                  data: that.processMaleAgeData(res[0])
+              },
+              {
+                  name: 'Females',
+                  data: that.processFemaleAgeData(res[0])
+              }];
+              // const data = {
+              //   labels: ['0-5', '5-10', '10-15', '15-20', '20-25', '25-30', '35-40','45-50','50-55','55-60','60-65','65-70','70-75','75-80','80-85','>85'],
+              //   datasets: [
+              //     {
+              //       label: 'Female',
+              //       backgroundColor: 'rgba(255,99,132,0.2)',
+              //       borderColor: 'rgba(255,99,132,1)',
+              //       borderWidth: 1,
+              //       hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+              //       hoverBorderColor: 'rgba(255,99,132,1)',
+              //       data: that.processFemaleAgeData(res[0])
+              //     },
+              //     {
+              //       label: 'Male',
+              //       backgroundColor: 'rgba(99,132,255,0.2)',
+              //       borderColor: 'rgba(99,132,255,1)',
+              //       borderWidth: 1,
+              //       hoverBackgroundColor: 'rgba(99,132,255,0.4)',
+              //       hoverBorderColor: 'rgba(99,132,255,1)',
+              //       data: that.processMaleAgeData(res[0])
+              //     }
+              //   ]
+              // };
 
-              const data = {
-                labels: ['0-5', '5-10', '10-15', '15-20', '20-25', '25-30', '35-40','45-50','50-55','55-60','60-65','65-70','70-75','75-80','80-85','>85'],
-                datasets: [
-                  {
-                    label: 'Female',
-                    backgroundColor: 'rgba(255,99,132,0.2)',
-                    borderColor: 'rgba(255,99,132,1)',
-                    borderWidth: 1,
-                    hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-                    hoverBorderColor: 'rgba(255,99,132,1)',
-                    data: that.processFemaleAgeData(res[0])
-                  },
-                  {
-                    label: 'Male',
-                    backgroundColor: 'rgba(99,132,255,0.2)',
-                    borderColor: 'rgba(99,132,255,1)',
-                    borderWidth: 1,
-                    hoverBackgroundColor: 'rgba(99,132,255,0.4)',
-                    hoverBorderColor: 'rgba(99,132,255,1)',
-                    data: that.processMaleAgeData(res[0])
-                  }
-                ]
-              };
 
 
-              this.setState({data:data})
+              this.setState({series:series})
             })
         }
       componentDidUpdate(prevProps, prevState){
@@ -85,19 +167,6 @@ class AgeChart extends React.Component{
 
         }
 
-      }
-      censusPromise(args) {
-        return new Promise(function(resolve, reject) {
-          census(args, function(err, json) {
-            if (!err) {
-
-              resolve(json);
-            } else {
-
-              reject(err);
-            }
-          });
-        });
       }
       processMaleAgeData (data){
 
@@ -183,14 +252,7 @@ class AgeChart extends React.Component{
                     </TableRow>
                     <TableRow>
                     <TableCell colSpan={4} >
-                    <HorizontalBar
-                      data={this.state.data != ""?this.state.data:[]}
-                      width={100}
-                      height={150}
-                      options={{
-                        responsive: true,
-                      }}
-                    /></TableCell>
+                    <Chart options={this.state.options} series={this.state.series} type="bar" width={380} height={400} /></TableCell>
                     </TableRow>
                     <TableRow>
                     <TableCell colSpan={3}>
