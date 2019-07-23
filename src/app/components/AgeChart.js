@@ -31,11 +31,11 @@ class AgeChart extends React.Component{
               data:[],
               series: [{
                   name: 'Males',
-                  data: [0.4, 0.65, 0.76, 0.88, 1.5, 2.1, 2.9, 3.8, 3.9, 4.2, 4, 4.3, 4.1, 4.2, 4.5, 3.9, 3.5, 3]
+                  data: []
               },
               {
                   name: 'Females',
-                  data: [-0.8, -1.05, -1.06, -1.18, -1.4, -2.2, -2.85, -3.7, -3.96, -4.22, -4.3, -4.4, -4.1, -4, -4.1, -3.4, -3.1, -2.8]
+                  data: []
               }],
               options: {
                 chart: {
@@ -65,8 +65,7 @@ class AgeChart extends React.Component{
                     }
                 },
                 yaxis: {
-                    // min: -1000,
-                    // max: 1000,
+
                     title: {
                        // text: 'Age',
                     },
@@ -85,7 +84,7 @@ class AgeChart extends React.Component{
                     }
                 },
                 title: {
-                    text: 'Age by Sex'
+                    text: ''
                 },
                 xaxis: {
                   categories: ['85+', '80-84', '75-79', '70-74', '65-69', '60-64', '55-59', '50-54', '45-49', '40-44', '35-39', '30-34', '25-29', '20-24', '15-19', '10-14', '5-9', '0-4'],
@@ -94,7 +93,7 @@ class AgeChart extends React.Component{
                   },
                   labels: {
                     formatter: function(val) {
-                      return val
+                      return Math.abs(val)
                     }
                   }
                 },
@@ -178,8 +177,28 @@ class AgeChart extends React.Component{
                   }
 
             }
-        }
-        return result
+        };
+        let age04 = result[0];
+        let age59 = result[1];
+        let age1014 = result[2];
+        let age2529 = result[8];
+        let age3034 = result[9];
+        let age3539 = result[10];
+        let age4044 = result[11];
+        let age4549 = result[12];
+        let age5054 = result[13];
+        let age5559 = result[14];
+        let age7074 = result[19];
+        let age7579 = result[20];
+        let age8084 = result[21];
+        let age85 = result[22];
+        let age1519 = parseInt(result[3])+ parseInt(result[4]);
+        let age2024 = parseInt(result[5])+ parseInt(result[6])+ parseInt(result[7]);
+        let age6064 = parseInt(result[15])+ parseInt(result[16]);
+        let age6569 = parseInt(result[17])+ parseInt(result[18]);
+
+
+        return [age04,age59,age1014,age1519,age2024,age2529,age3034,age3539,age4044,age4549,age5054,age5559,age6064,age6569,age7074,age7579,age8084,age85];
       }
       processFemaleAgeData (data){
 
@@ -194,7 +213,27 @@ class AgeChart extends React.Component{
 
             }
         }
-        return result
+        let age04 = result[0];
+        let age59 = result[1];
+        let age1014 = result[2];
+        let age2529 = result[8];
+        let age3034 = result[9];
+        let age3539 = result[10];
+        let age4044 = result[11];
+        let age4549 = result[12];
+        let age5054 = result[13];
+        let age5559 = result[14];
+        let age7074 = result[19];
+        let age7579 = result[20];
+        let age8084 = result[21];
+        let age85 = result[22];
+        let age1519 = parseInt(result[3])+ parseInt(result[4]);
+        let age2024 = parseInt(result[5])+ parseInt(result[6])+ parseInt(result[7]);
+        let age6064 = parseInt(result[15])+ parseInt(result[16]);
+        let age6569 = parseInt(result[17])+ parseInt(result[18]);
+
+
+        return [age04,age59,age1014,age1519,age2024,age2529,age3034,age3539,age4044,age4549,age5054,age5559,age6064,age6569,age7074,age7579,age8084,age85];
       }
       handleClear (){
           props.mapState.view.graphics.removeAll();
@@ -202,6 +241,7 @@ class AgeChart extends React.Component{
 
       }
       handleDownload(){
+
         let that = this;
         const options = {
           fieldSeparator: ',',
@@ -209,26 +249,37 @@ class AgeChart extends React.Component{
           decimalSeparator: '.',
           showLabels: true,
           showTitle: true,
-          title: 'Nativity',
+          title: 'Age by sex',
           useTextFile: false,
           useBom: true,
           useKeysAsHeaders: true,
           // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
         };
-        let data = {"tract_id":that.props.id[0]};
-        for(var i = 0; i<this.state.data.datasets[0].data.length;i++){
-          // let record = {this.state.data.labels[i]:this.state.data.datasets[0].data[i]};
-
-          data[that.state.data.labels[i]] = that.state.data.datasets[0].data[i]
+        // let data = {"tract_id":that.props.id[0]};
+        let data = [];
+        let label = ['0-04','05-09','10-14','15-19','20-24','25-29','30-34','35-39','40-44','45-49','50-54','55-59','60-64','65-69','70-74','75-79','80-84','85+']
+        for(var i = 0; i<this.state.series[0].data.length;i++){
+          // data[label[i]] = that.state.series[0].data[i];
+          let record = {
+            "age":label[i],
+            "male":that.state.series[0].data[i],
+            "female":Math.abs(that.state.series[1].data[i])
+          }
+          // data.age = label[i];
+          // data.male = that.state.series[0].data[i];
+          // data.female = that.state.series[1].data[i];
+          data.push(record);
         };
         console.log(data);
         const csvExporter = new ExportToCsv(options);
 
-        csvExporter.generateCsv([data]);
+        csvExporter.generateCsv(data);
       }
 
         render() {
+          let that = this;
           let data = this.state.data;
+          let label = ['0-4','5-9','10-14','15-19','20-24','25-29','30-34','35-39','40-44','45-49','50-54','55-59','60-64','65-69','70-74','75-79','80-84','85+']
           function getSum(total,num) {
             return total + num;
           }
@@ -237,33 +288,41 @@ class AgeChart extends React.Component{
             <div>
               <Paper>
               <div>
-              <Table>
+              <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="right">Total Population</TableCell>
-                    <TableCell align="right">Native</TableCell>
-                    <TableCell align="right">Naturalized Citizen</TableCell>
-                    <TableCell align="right">Not a Citizen</TableCell>
+                    <TableCell>Age</TableCell>
+                    <TableCell align="right">Male</TableCell>
+                    <TableCell align="right">Female</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                    <TableRow>
 
-                    </TableRow>
+                      {
+                        this.state.series[0].data.map((item, key)=>(
+                          <TableRow key={key}>
+                            <TableCell >{label[key]}</TableCell>
+                            <TableCell align="right">{item}</TableCell>
+                            <TableCell align="right">{Math.abs(that.state.series[1].data[key])}</TableCell>
+                          </TableRow>
+                          )
+                        )
+                      }
+                      <TableRow>
+                      <TableCell colSpan={2}>
+                        Download as CSV
+                      </TableCell>
+                      <TableCell >
+                        <IconButton aria-label="Delete" onClick={()=>this.handleDownload()}>
+                          <SaveIcon />
+                        </IconButton>
+                      </TableCell>
+                      </TableRow>
                     <TableRow>
-                    <TableCell colSpan={4} >
+                    <TableCell colSpan={3} >
                     <Chart options={this.state.options} series={this.state.series} type="bar" width={380} height={400} /></TableCell>
                     </TableRow>
-                    <TableRow>
-                    <TableCell colSpan={3}>
-                      Download as CSV
-                    </TableCell>
-                    <TableCell >
-                      <IconButton aria-label="Delete" onClick={()=>this.handleDownload()}>
-                        <SaveIcon />
-                      </IconButton>
-                    </TableCell>
-                    </TableRow>
+
 
                 </TableBody>
               </Table>
