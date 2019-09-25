@@ -125,7 +125,7 @@ function SketchWidgetPaper(props) {
     <div>
       <Paper className={classes.root}>
         <Typography component="p">
-          Selected track(s) : {selected != null && selected.length>1 ?selected.join(", "):selected}
+          Selected Tract(s) : {selected != null && selected.length>1 ?selected.join(", "):selected}
         </Typography>
         <br/>
 
@@ -141,6 +141,7 @@ function SketchWidgetPaper(props) {
                 Clear Selection
               </Button>
             </ButtonGroup>
+            <div>Source: U.S. Census Bureau, <br>2013 - 2017 American Community Survey (ACS) </div>
           </Grid>
         </Grid>
       </Grid>

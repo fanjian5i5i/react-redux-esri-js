@@ -5,6 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Divider from '@material-ui/core/Divider';
+
 import { connect } from 'react-redux';
 import { updateView,updateMap,updateSelected,updateDrawer } from '../redux/actions';
 
@@ -57,7 +59,7 @@ function SketchWidgetPaper(props) {
     <div>
       <Paper className={classes.root}>
         <Typography component="p">
-          Selected track(s) : {selected != null && selected.length>1 ?selected.join(", "):selected}
+          Selected Tract(s) : {selected != null && selected.length>1 ?selected.join(", "):selected}
         </Typography>
         <br/>
 
@@ -73,6 +75,10 @@ function SketchWidgetPaper(props) {
                 Clear Selection
               </Button>
             </ButtonGroup>
+            <div><br/></div>
+            <Typography component="p">
+            Source: U.S. Census Bureau, <br/> 2013 - 2017 American Community Survey (ACS)
+            </Typography>
           </Grid>
         </Grid>
       </Grid>
