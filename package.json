@@ -42,7 +42,7 @@
     "@material-ui/icons": "^4.0.1",
     "apexcharts": "^3.8.3",
     "chart.js": "^2.8.0",
-    "citysdk": "^2.0.28",
+    "citysdk": "^2.0.36",
     "esri-loader": "^2.9.2",
     "export-to-csv": "^0.2.1",
     "react": "^16.8.6",
