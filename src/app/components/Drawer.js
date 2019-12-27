@@ -27,7 +27,7 @@ import NativityChart from './NativityChart';
 import AgeChart from './AgeChart'
 
 
-const drawerWidth = 360;
+const drawerWidth = 400;
 
 const useStyles = makeStyles(theme => ({
   root:{
@@ -107,7 +107,6 @@ function ResponsiveDrawer(props) {
 
   };
 
-
   const drawer = (
     <div className={classes.fullList}>
       <List
@@ -115,7 +114,10 @@ function ResponsiveDrawer(props) {
         className={classes.root}
         >
         <ListItem style={{fontWeight:"bold",backgroundColor:"white !important"}} className={classes.drawerHeader}>
-          {props.mapState.selected}
+          {
+          // props.mapState.selected ? props.mapState.selected.join(", "):""
+            "Data and Charts"
+          }
         <ListItemText />
           <Close onClick={handleOpen}
           onKeyDown={handleOpen}/>

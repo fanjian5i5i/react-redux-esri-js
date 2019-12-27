@@ -17,7 +17,8 @@ class MapView extends React.Component {
         this.state = {
             map: null,
             view:null,
-            layer:null
+            layer:null,
+            graphics:[]
         };
         this.handleMapLoad = this.handleMapLoad.bind(this)
     }
@@ -91,36 +92,67 @@ class MapView extends React.Component {
 
     handleOnClick(e){
       var that = this;
-      console.log(e.mapPoint);
-      that.state.view.graphics.removeAll();
+      // console.log(e.mapPoint);
+      // that.state.view.graphics.removeAll();
       that.props.mapState.view.hitTest(e).then(function (response) {
           if (response.results.length) {
             var graphic = response.results.filter(function (result) {
               // check if the graphic belongs to the layer of interest
               return result.graphic.layer === that.state.layer;
-
-
-
             })[0].graphic;
             //
             // // do something with the result graphic
-            loadModules(["esri/Graphic"]).then(([ Graphic ]) => {
-              const g = new Graphic({
-                geometry: graphic.geometry,
-                symbol: {
-                    type: "simple-fill",  // autocasts as new SimpleFillSymbol()
-                    color: [ 51,51, 204, 0.1 ],
-                    style: "solid",
-                    outline: {  // autocasts as new SimpleLineSymbol()
-                      color: [ 51,51, 204, 0.9 ],
-                      width: 1
-                    }
+
+            if(that.state.graphics.indexOf(graphic.attributes.TRACTCE10.toString())>=0){
+
+              for(var i = 0; i < that.props.mapState.view.graphics.length; i++){
+                console.log(that.props.mapState.view.graphics.getItemAt(i))
+                if(that.props.mapState.view.graphics.getItemAt(i).attributes.TRACTCE10 == graphic.attributes.TRACTCE10){
+          
+                  that.props.mapState.view.graphics.remove(that.props.mapState.view.graphics.getItemAt(i));
                 }
+              
+              }
+
+              let graphicsTemp = that.state.graphics;
+              let index = graphicsTemp.indexOf(graphic.attributes.TRACTCE10.toString());
+              graphicsTemp.splice(index,1);
+              that.props.dispatch(updateSelected(graphicsTemp))
+              setState({graphics:graphicsTemp});
+              
+            }else{
+
+              loadModules(["esri/Graphic"]).then(([ Graphic ]) => {
+                const g = new Graphic({
+                  geometry: graphic.geometry,
+                  attributes:{TRACTCE10:graphic.attributes.TRACTCE10},
+                  symbol: {
+                      type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+                      color: [ 51,51, 204, 0.1 ],
+                      style: "solid",
+                      outline: {  // autocasts as new SimpleLineSymbol()
+                        color: [ 51,51, 204, 0.9 ],
+                        width: 1
+                      }
+                  }
+                });
+                that.state.view.graphics.add(g);
               });
-              that.state.view.graphics.add(g);
-            });
-            console.log(graphic.attributes);
-            that.props.dispatch(updateSelected([graphic.attributes.TRACTCE10]))
+              let graphicsTemp = that.state.graphics;
+              graphicsTemp.push(graphic.attributes.TRACTCE10);
+              that.props.dispatch(updateSelected(graphicsTemp))
+              setState({graphics:graphicsTemp});
+              
+            }
+
+            
+
+            
+            // console.log(graphic.attributes);
+
+            // console.log(that.state.graphics);
+            
+            
           }
         });
     }

@@ -31,25 +31,15 @@ const useStyles = makeStyles(theme => ({
 
 function SketchWidgetPaper(props) {
   const classes = useStyles();
-  const [selected, setSelected] = useState("");
   const [data, setData] = useState("");
-
-
-
-
-  React.useEffect(() => {
-
-    setSelected(props.mapState.selected);
-  });
 
 
   let handleClear =()=> {
       props.mapState.view.graphics.removeAll();
-      props.dispatch(updateSelected(""))
+      props.dispatch(updateSelected([]))
 
     }
   let handleGetCensus =()=> {
-
 
         props.dispatch(updateDrawer(true))
   }
@@ -59,7 +49,8 @@ function SketchWidgetPaper(props) {
     <div>
       <Paper className={classes.root}>
         <Typography component="p">
-          Selected Tract(s) : {selected != null && selected.length>1 ?selected.join(", "):selected}
+          {/* Selected Tract(s) : {selected != null && selected.length>1 ?selected.join(", "):selected} */}
+          Selected Tract(s) : {props.mapState.selected != null ? props.mapState.selected.join(", "): ""}
         </Typography>
         <br/>
 

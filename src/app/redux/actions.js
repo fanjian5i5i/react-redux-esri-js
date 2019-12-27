@@ -14,6 +14,7 @@ export function updateMap(map) {
 }
 
 export function updateSelected(selected) {
+
   return {
     type: ActionTypes.UPDATE_SELECTED,
     selected:selected

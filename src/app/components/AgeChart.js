@@ -103,13 +103,17 @@ class AgeChart extends React.Component{
       }
       handleGetCensus(id){
         let that = this;
+        let tract = "";
+
+        if(id){
+        tract = id.length==0 ? id : id.join(',');
         let center = { lat: 42.3601, lng: -71.0589 };
         let values = ["group(B01001)"];
         let Args = {
             "vintage": 2017,
             "geoHierarchy": {
               "county": center,
-              "tract": id
+              "tract": tract
             },
             "sourcePath": ["acs", "acs5"],
             "values": values,
@@ -118,6 +122,8 @@ class AgeChart extends React.Component{
           census(Args,
             (err, res) => {
               console.log(res);
+
+              if(res.length <= 1){
               let series =  [{
                   name: 'Males',
                   data: that.processMaleAgeData(res[0])
@@ -126,46 +132,40 @@ class AgeChart extends React.Component{
                   name: 'Females',
                   data: that.processFemaleAgeData(res[0])
               }];
-              // const data = {
-              //   labels: ['0-5', '5-10', '10-15', '15-20', '20-25', '25-30', '35-40','45-50','50-55','55-60','60-65','65-70','70-75','75-80','80-85','>85'],
-              //   datasets: [
-              //     {
-              //       label: 'Female',
-              //       backgroundColor: 'rgba(255,99,132,0.2)',
-              //       borderColor: 'rgba(255,99,132,1)',
-              //       borderWidth: 1,
-              //       hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-              //       hoverBorderColor: 'rgba(255,99,132,1)',
-              //       data: that.processFemaleAgeData(res[0])
-              //     },
-              //     {
-              //       label: 'Male',
-              //       backgroundColor: 'rgba(99,132,255,0.2)',
-              //       borderColor: 'rgba(99,132,255,1)',
-              //       borderWidth: 1,
-              //       hoverBackgroundColor: 'rgba(99,132,255,0.4)',
-              //       hoverBorderColor: 'rgba(99,132,255,1)',
-              //       data: that.processMaleAgeData(res[0])
-              //     }
-              //   ]
-              // };
+              that.setState({series:series})
+            }else{
+              console.log(res)
+              let keys = Object.keys(res[0]);
+                let keyLength = keys.length - 3; 
+                let tempObj = {}
+                keys.forEach(key =>{
 
+                  let temp = 0;
+                  for(var i = 0; i< res.length ; i++ ){
+                    
+                    temp += parseInt(res[i][key]);
+                  }
+                  tempObj[key]  = temp;
 
-
-              this.setState({series:series})
+                });
+                let series =  [{
+                  name: 'Males',
+                  data: that.processMaleAgeData(tempObj)
+                },
+                {
+                    name: 'Females',
+                    data: that.processFemaleAgeData(tempObj)
+                }];
+                that.setState({series:series})
+              
+            }
             })
-        }
-      componentDidUpdate(prevProps, prevState){
-        let that = this;
-        if (prevProps.id !== this.props.id) {
-          if(this.props.id[0]){
-            that.handleGetCensus(this.props.id[0])
-          }else{
-            this.setState({data:[]})
           }
-
         }
 
+      componentWillReceiveProps(nextProps){
+        console.log(nextProps)
+        this.handleGetCensus(nextProps.id)
       }
       processMaleAgeData (data){
 

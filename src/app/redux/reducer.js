@@ -45,7 +45,6 @@ function map(state = initMapState, action) {
         map: action.map,
       };
     case ActionTypes.UPDATE_SELECTED:
-      console.log(action)
       return {
         ...state,
         selected: action.selected,

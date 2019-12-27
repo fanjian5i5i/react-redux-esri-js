@@ -29,58 +29,133 @@ class NativityChart extends React.Component{
           };
       }
       handleGetCensus(id){
+        console.log(id);
         let that = this;
-        let center = { lat: 42.3601, lng: -71.0589 };
-        let values = ["B05002_002E","B05002_014E","B05002_021E"];
-        let Args = {
-            "vintage": 2017,
-            "geoHierarchy": {
-              "county": center,
-              "tract": id
-            },
-            "sourcePath": ["acs", "acs5"],
-            "values": values,
-            // "geoResolution": "500k",
-          };
+        let tract = "";
+        // let tract = id.length==0 ? id : id.join(',');
+        if(id){
+          tract = id.length==0 ? id : id.join(',');
+          let center = { lat: 42.3601, lng: -71.0589 };
+          let values = ["B05002_002E","B05002_014E","B05002_021E"];
+          let Args = {
+              "vintage": 2017,
+              "geoHierarchy": {
+                "county": center,
+                "tract": tract
+              },
+              "sourcePath": ["acs", "acs5"],
+              "values": values,
+              // "geoResolution": "500k",
+            };
+
+
           census(Args,
             (err, res) => {
-              console.log(res);
+              if(!err){
+              if(res.length <= 1){
+                const data = {
+                  labels: ['Native','Naturalized citizen','Not a citizen'],
+                  datasets: [
+                    {
+                      label: 'Nativity',
+                      backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56'
+                        ],
+                      hoverBackgroundColor: [
+                      '#FF6384',
+                      '#36A2EB',
+                      '#FFCE56'
+                    ],
+                      data: that.processAgeData(res[0])
+                    }
+                  ]
+                };
+  
+                this.setState({data:data})
+              }else{
 
-              const data = {
-                labels: ['Native','Naturalized citizen','Not a citizen'],
-                datasets: [
-                  {
-                    label: 'Nativity',
-                    backgroundColor: [
-                  		'#FF6384',
-                  		'#36A2EB',
-                  		'#FFCE56'
-                  		],
-                    hoverBackgroundColor: [
-                		'#FF6384',
-                		'#36A2EB',
-                		'#FFCE56'
-                  ],
-                    data: that.processAgeData(res[0])
+                let keys = Object.keys(res[0]);
+                let keyLength = keys.length - 3; 
+                let tempObj = {}
+                keys.forEach(key =>{
+
+                  let temp = 0;
+                  for(var i = 0; i< res.length ; i++ ){
+                    
+                    temp += res[i][key];
                   }
-                ]
-              };
+                  tempObj[key]  = temp;
 
-              this.setState({data:data})
+                });
+                const data = {
+                  labels: ['Native','Naturalized citizen','Not a citizen'],
+                  datasets: [
+                    {
+                      label: 'Nativity',
+                      backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56'
+                        ],
+                      hoverBackgroundColor: [
+                      '#FF6384',
+                      '#36A2EB',
+                      '#FFCE56'
+                    ],
+                      data: that.processAgeData(tempObj)
+                    }
+                  ]
+                };
+  
+                this.setState({data:data})
+              }
+              
+            }else{
+              console.log(err)
+            }
+
+
+              
             })
         }
-      componentDidUpdate(prevProps, prevState){
-        let that = this;
-        if (prevProps.id !== this.props.id) {
-          if(this.props.id[0]){
-            that.handleGetCensus(this.props.id[0])
-          }else{
-            this.setState({data:[]})
-          }
+        
+
 
         }
+        componentWillReceiveProps(nextProps){
+        let that = this;
+        // if(nextState.data != this.state.data){
+          // this.setState({data:[1]})
+        // }
+          console.log(nextProps.id)
+
+          that.handleGetCensus(nextProps.id)
+          
+          // console.log(this.state.data)
+          // console.log(nextState)
+        // }
+        
+        // console.log(nextProps);
+        // console.log(this.props)
+        // return false
+        // this.handleGetCensus(123)
+        // if (prevProps.id !== this.props.id) {
+        //   if(this.props.id){
+        //     console.log(this.props.id)
+
+        //     that.handleGetCensus(this.props.id)
+        //   }else{
+        //     this.setState({data:[]})
+        //   }
+
+        // }
 
       }
+      // componentDidMount(){
+      //   this.handleGetCensus()
+      // }
       censusPromise(args) {
         return new Promise(function(resolve, reject) {
           census(args, function(err, json) {
