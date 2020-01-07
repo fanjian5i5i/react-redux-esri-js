@@ -156,8 +156,20 @@ class MapView extends React.Component {
           }
         });
     }
-    componentDidMount() {
+    componentWillReceiveProps(nextProps) {
+      console.log(nextProps.mapState.selected)
+      if(nextProps.mapState.selected && nextProps.mapState.selected.length==0){
+        this.setState({graphics:[]})
+      }
+      // console.log(this.props.mapState.selected)
+      // if(this.props.mapState.selected){
 
+      
+      //   if(this.props.mapState.selected.length==0){
+      //     // this.setState({graphics:[]})
+      //     console.log(this.props.mapState.selected)
+      //   }
+      // }
     }
     render() {
     //  <SketchWidget/>
