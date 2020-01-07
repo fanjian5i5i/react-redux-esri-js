@@ -23,6 +23,11 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { updateDrawer } from '../redux/actions';
 
+import Population from "./Population";
+import XXX from "./XXX";
+import Income from "./Income";
+import Housing from "./Housing";
+
 import NativityChart from './NativityChart';
 import AgeChart from './AgeChart'
 
@@ -106,6 +111,22 @@ function ResponsiveDrawer(props) {
     }
 
   };
+  let content;
+  switch(props.generalState.category){
+    case "population":
+      content = <Population/>
+      break;
+      case "xxx":
+        content = <XXX/>
+        break;
+        case "income":
+          content = <Income/>
+          break;
+          case "housing":
+            content = <Housing/>
+            break;
+    default:
+  }
 
   const drawer = (
     <div className={classes.fullList}>
@@ -116,37 +137,18 @@ function ResponsiveDrawer(props) {
         <ListItem style={{fontWeight:"bold",backgroundColor:"white !important"}} className={classes.drawerHeader}>
           {
           // props.mapState.selected ? props.mapState.selected.join(", "):""
-            "Data and Charts"
+            // "Data and Charts"
+            props.generalState.category.toUpperCase()
           }
         <ListItemText />
           <Close onClick={handleOpen}
           onKeyDown={handleOpen}/>
         </ListItem>
         <Divider />
-        <ListItem button onClick={handleClickCode("nativity")} className={classes.title}>
-          <ListItemText inset primary="Nativity" className={classes.title}/>
-            {nativityOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Divider />
-          <Collapse in={nativityOpen} timeout="auto">
-
-              <NativityChart id={props.mapState.selected}/>
-
-
-          </Collapse>
-          <Divider/>
-          <ListItem button onClick={handleClickCode("age")} className={classes.title}>
-            <ListItemText inset primary="Age by sex" className={classes.title}/>
-              {ageOpen ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Divider />
-            <Collapse in={ageOpen} timeout="auto">
-
-                <AgeChart id={props.mapState.selected}/>
-
-
-            </Collapse>
-            <Divider/>
+        {
+          content
+        }
+        
       </List>
     </div>
   );

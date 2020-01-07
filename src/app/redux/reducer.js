@@ -4,12 +4,13 @@ import * as ActionTypes from './actionTypes';
 const initMapState = {
   map:null,
   view:null,
-  selected:null
+  selected:null,
+  
 };
 
 const initGeneralState = {
-  drawerOpen:false
-
+  drawerOpen:false,
+  category:"population"
 };
 
 function general(state = initGeneralState, action) {
@@ -22,7 +23,13 @@ function general(state = initGeneralState, action) {
         ...state,
         drawerOpen: action.open,
       };
+      case ActionTypes.CHANGE_CATEGORY:
+        return {
+          ...state,
+          category: action.category,
+        };
     }
+    
 
 
   return state
@@ -49,6 +56,9 @@ function map(state = initMapState, action) {
         ...state,
         selected: action.selected,
       };
+
+      
+      
     default:
       return state;
     }

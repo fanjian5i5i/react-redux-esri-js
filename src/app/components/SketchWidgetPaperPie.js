@@ -22,9 +22,18 @@ const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3, 2),
     position: 'fixed',
-    top: 160,
-    left: 14
+    top: 80,
+    left: 55,
+    borderRadius: 0,
   },
+  foot:{
+    position: "fixed",
+    left: 0,
+    bottom: 0,
+    width: "100%",
+    height: window.innerHeight/3,
+    padding: theme.spacing(3, 2),
+  }
 }));
 
 
@@ -47,7 +56,7 @@ function SketchWidgetPaper(props) {
 
   return (
     <div>
-      <Paper className={classes.root}>
+      <Paper className={window.innerWidth <= 760 ? classes.foot : classes.root }>
         <Typography component="p">
           {/* Selected Tract(s) : {selected != null && selected.length>1 ?selected.join(", "):selected} */}
           Selected Tract(s) : {props.mapState.selected != null ? props.mapState.selected.join(", "): ""}

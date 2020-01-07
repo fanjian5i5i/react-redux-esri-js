@@ -27,3 +27,11 @@ export function updateDrawer(open) {
     open:open
   };
 }
+
+export function changeCategory(category) {
+
+  return {
+    type: ActionTypes.CHANGE_CATEGORY,
+    category:category
+  };
+}
