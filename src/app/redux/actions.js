@@ -35,3 +35,13 @@ export function changeCategory(category) {
     category:category
   };
 }
+
+export function updateLayer(layer) {
+
+  return {
+    type: ActionTypes.UPDATE_LAYER,
+    layer:layer
+  };
+}
+
+

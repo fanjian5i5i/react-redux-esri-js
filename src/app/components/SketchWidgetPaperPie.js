@@ -8,7 +8,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Divider from '@material-ui/core/Divider';
 
 import { connect } from 'react-redux';
-import { updateView,updateMap,updateSelected,updateDrawer } from '../redux/actions';
+import { updateView,updateMap,updateSelected,updateDrawer,updateLayer } from '../redux/actions';
 
 import {Pie} from 'react-chartjs-2';
 
@@ -53,13 +53,31 @@ function SketchWidgetPaper(props) {
         props.dispatch(updateDrawer(true))
   }
 
+  let handleTracts =() =>{
+    props.dispatch(updateLayer("tracts"))
+  }
+  let handleNeighborhood =() =>{
+    props.dispatch(updateLayer("neighborhood"))
+  }
+
+  
+
 
   return (
     <div>
       <Paper className={window.innerWidth <= 760 ? classes.foot : classes.root }>
+        <ButtonGroup size="small" aria-label="Small outlined button group">
+              <Button onClick={handleTracts}>
+                Tracts
+              </Button>
+              <Button onClick={handleNeighborhood}>
+                Neighborhood
+              </Button>
+            </ButtonGroup>
+            <br/>
         <Typography component="p">
           {/* Selected Tract(s) : {selected != null && selected.length>1 ?selected.join(", "):selected} */}
-          Selected Tract(s) : {props.mapState.selected != null ? props.mapState.selected.join(", "): ""}
+          Selected {props.mapState.layer} : {props.mapState.selected != null ? props.mapState.selected.join(", "): ""}
         </Typography>
         <br/>
 

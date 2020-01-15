@@ -5,6 +5,7 @@ const initMapState = {
   map:null,
   view:null,
   selected:null,
+  layer:"tracts"
   
 };
 
@@ -55,6 +56,11 @@ function map(state = initMapState, action) {
       return {
         ...state,
         selected: action.selected,
+      };
+      case ActionTypes.UPDATE_LAYER:
+      return {
+        ...state,
+        layer: action.layer,
       };
 
       

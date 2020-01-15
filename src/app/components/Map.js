@@ -11,6 +11,51 @@ const styles = {
     display:"none"
   }
 }
+
+
+let Layer = (props) =>{
+  React.useEffect(() => {
+    
+    loadModules(["esri/widgets/Home","esri/layers/FeatureLayer"]).then(([FeatureLayer]) =>{
+
+      if(props.layer === "neighborhood"){
+        console.log(props.map.findLayerById("tracts"))
+        props.map.findLayerById("tracts").visible = false;
+        props.map.findLayerById("neighborhood").visible = true;
+        // let l = props.map.findLayerById("tracts");
+        // props.map.layers.remove(l)
+        //   let fl = new FeatureLayer({
+        //   // URL to the service
+        //   id: "neighborhood",
+        //   url: "http://mapservices.bostonredevelopmentauthority.org/arcgis/rest/services/Maps/Neighborhoods_tract/MapServer/0"
+        // });
+        
+        // // props.map.add(fl);
+        // console.log(fl);
+        // console.log(props.map.add(fl))
+      }else if(props.layer === "tracts"){
+        console.log(props.map.findLayerById("neighborhood"))
+        props.map.findLayerById("tracts").visible = true;
+        props.map.findLayerById("neighborhood").visible = false;
+      //   console.log(props.map.findLayerById("neighborhood"))
+      //   // props.map.layers.remove(props.map.findLayerById("neighborhood"))
+      //   // let l = new FeatureLayer({
+      //   //   // URL to the service
+      //   //   id:"neighborhood",
+
+      //   //   url: "https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/services/Census_2010_Tracts/FeatureServer/0"
+      //   // });
+      //   // props.map.layers.add(l)
+      }
+
+      
+
+    })
+
+  },[props.layer])
+
+  return null
+}
 class MapView extends React.Component {
     constructor(props) {
         super(props);
@@ -18,6 +63,7 @@ class MapView extends React.Component {
             map: null,
             view:null,
             layer:null,
+            neighborhood:null,
             graphics:[]
         };
         this.handleMapLoad = this.handleMapLoad.bind(this)
@@ -31,8 +77,15 @@ class MapView extends React.Component {
 
           const layer = new FeatureLayer({
             // URL to the service
-            id:"parcel",
+            id:"tracts",
             url: "https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/services/Census_2010_Tracts/FeatureServer/0"
+          });
+
+          const layer2 = new FeatureLayer({
+            // URL to the service
+            id: "neighborhood",
+            url: "http://mapservices.bostonredevelopmentauthority.org/arcgis/rest/services/Maps/Neighborhoods_tract/MapServer/0",
+            visible:false
           });
 
           layer.renderer = {
@@ -63,7 +116,8 @@ class MapView extends React.Component {
 
           layer.labelingInfo = [ statesLabelClass ];
           that.setState({layer:layer})
-          map.add(layer);
+          that.setState({neighborhood:layer2})
+          map.addMany([layer,layer2]);
 
           // view.on("click", function (event) {
           //   // Search for graphics at the clicked location. View events can be used
@@ -92,15 +146,53 @@ class MapView extends React.Component {
 
     handleOnClick(e){
       var that = this;
+
+      if(this.props.mapState.layer === "neighborhood"){
+      loadModules(["esri/views/layers/FeatureLayerView"]).then(([FeatureLayerView]) => {
+
+      var query = that.state.neighborhood.createQuery();
+      query.geometry = e.mapPoint;
+      query.spatialRelationship = "intersects";
+      query.returnGeometry = true;
+      query.outFields = [ "Neighborhood" ];
+      that.state.neighborhood.queryFeatures(query).then(result=>{
+        console.log(result);
+        if(result.features.length > 0){
+          // that.props.dispatch(updateSelected(result.features.attributes.Neighborhood))
+          var query = that.state.layer.createQuery();
+          query.geometry = result.features[0].geometry;
+          query.spatialRelationship = "intersects";
+          query.returnGeometry = true;
+          query.outFields = [ "*" ];
+          that.state.layer.queryFeatures(query).then(result=>{
+            console.log(result);
+            if(result.features.length>0){
+              let arr = [];
+              result.features.forEach(feature=>{
+                arr.push(feature.attributes.TRACTCE10)
+              });
+
+              that.props.dispatch(updateSelected(arr))
+            }
+          })
+        }
+
+
+      });});
+      }else{
+
+      
       // console.log(e.mapPoint);
       // that.state.view.graphics.removeAll();
       that.props.mapState.view.hitTest(e).then(function (response) {
           if (response.results.length) {
             var graphic = response.results.filter(function (result) {
               // check if the graphic belongs to the layer of interest
-              return result.graphic.layer === that.state.layer;
+              return result.graphic.layer === that.state.layer || result.graphic.layer === that.state.neighborhood;
             })[0].graphic;
             //
+
+            console.log(graphic)
             // // do something with the result graphic
 
             if(that.state.graphics.indexOf(graphic.attributes.TRACTCE10.toString())>=0){
@@ -125,7 +217,7 @@ class MapView extends React.Component {
               loadModules(["esri/Graphic"]).then(([ Graphic ]) => {
                 const g = new Graphic({
                   geometry: graphic.geometry,
-                  attributes:{TRACTCE10:graphic.attributes.TRACTCE10},
+                  attributes:{TRACTCE10:graphic.attributes.TRACTCE10 ? graphic.attributes.TRACTCE10 :graphic.attributes.neighborhood },
                   symbol: {
                       type: "simple-fill",  // autocasts as new SimpleFillSymbol()
                       color: [ 51,51, 204, 0.1 ],
@@ -155,8 +247,10 @@ class MapView extends React.Component {
             
           }
         });
+
+      }
     }
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {  
       console.log(nextProps.mapState.selected)
       if(nextProps.mapState.selected && nextProps.mapState.selected.length==0){
         this.setState({graphics:[]})
@@ -185,7 +279,7 @@ class MapView extends React.Component {
               onClick = {this.handleOnClick.bind(this)}
               onLoad={this.handleMapLoad.bind(this)}
           >
-
+            <Layer layer={this.props.mapState.layer}/>
           </Map>
         );
     }
