@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Map,loadModules } from '@esri/react-arcgis';
 // import SketchWidget from './SketchWidget';
 import { connect } from 'react-redux';
-import { updateView,updateMap,updateSelected } from '../redux/actions';
+import { updateView,updateMap,updateSelected,updateNeighborhood } from '../redux/actions';
 
 
 
@@ -63,6 +63,7 @@ class MapView extends React.Component {
             map: null,
             view:null,
             layer:null,
+            layerName:"",
             neighborhood:null,
             graphics:[]
         };
@@ -102,9 +103,22 @@ class MapView extends React.Component {
               }
             }
           };
+          layer2.renderer = {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "simple-fill",  // autocasts as new SimpleMarkerSymbol()
 
+              color: [0,0,0,0.1],
+              outline: {  // autocasts as new SimpleLineSymbol()
+                width: 2,
+                color: "grey",
+                haloSize: 1.5,
+                haloColor: "white"
+              }
+            }
+          };
 
-          const statesLabelClass = new LabelClass({
+          let statesLabelClass = new LabelClass({
             labelExpressionInfo: { expression: "$feature.TRACTCE10" },
             symbol: {
               type: "text",  // autocasts as new TextSymbol()
@@ -115,6 +129,19 @@ class MapView extends React.Component {
           });
 
           layer.labelingInfo = [ statesLabelClass ];
+
+           statesLabelClass = new LabelClass({
+            labelExpressionInfo: { expression: "$feature.Neighborhood" },
+            symbol: {
+              type: "text",  // autocasts as new TextSymbol()
+              color: "black",
+              haloSize: 1.5,
+              haloColor: "white"
+            }
+          });
+
+          layer2.labelingInfo = [ statesLabelClass ];
+
           that.setState({layer:layer})
           that.setState({neighborhood:layer2})
           map.addMany([layer,layer2]);
@@ -148,7 +175,9 @@ class MapView extends React.Component {
       var that = this;
 
       if(this.props.mapState.layer === "neighborhood"){
-      loadModules(["esri/views/layers/FeatureLayerView"]).then(([FeatureLayerView]) => {
+      this.props.mapState.view.graphics.removeAll();
+      this.props.dispatch(updateSelected([]))
+      loadModules(["esri/views/layers/FeatureLayerView","esri/Graphic"]).then(([FeatureLayerView, Graphic]) => {
 
       var query = that.state.neighborhood.createQuery();
       query.geometry = e.mapPoint;
@@ -157,8 +186,27 @@ class MapView extends React.Component {
       query.outFields = [ "Neighborhood" ];
       that.state.neighborhood.queryFeatures(query).then(result=>{
         console.log(result);
+        
+        
         if(result.features.length > 0){
           // that.props.dispatch(updateSelected(result.features.attributes.Neighborhood))
+          that.props.dispatch(updateNeighborhood(result.features[0].attributes.Neighborhood))
+
+
+          const g = new Graphic({
+            geometry: result.features[0].geometry,
+            attributes:result.features[0].attributes.Neighborhood,
+            symbol: {
+                type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+                color: [ 51,51, 204, 0.1 ],
+                style: "solid",
+                outline: {  // autocasts as new SimpleLineSymbol()
+                  color: [ 51,51, 204, 0.9 ],
+                  width: 1
+                }
+            }
+          });
+          this.props.mapState.view.graphics.add(g);
           var query = that.state.layer.createQuery();
           query.geometry = result.features[0].geometry;
           query.spatialRelationship = "intersects";
@@ -250,8 +298,49 @@ class MapView extends React.Component {
 
       }
     }
+    componentDidUpdate(prevProps,prevState){
+      let that = this;
+      // this.setState({layerName:this.props.mapState.layer})
+      console.log(prevProps.mapState.layer)
+      console.log(this.props.mapState.layer);
+      if(prevProps.mapState.layer!==this.props.mapState.layer){
+        this.setState({layerName:that.props.mapState.layer})
+      }
+    }
     componentWillReceiveProps(nextProps) {  
-      console.log(nextProps.mapState.selected)
+      let that = this;
+      // console.log(nextProps.mapState.selected)
+      // console.log(nextProps.mapState.layer);
+      console.log(this.state.layerName);
+      // let refresh = this.state.map.layers.filter(function(layer){
+      //   console.log(layer)
+      //   return layer.id == nextProps.mapState.layer && layer.visible 
+      // })
+      // if(refresh){
+      //   // that.props.mapState.view.graphics.removeAll();
+      //   console.log("refresh layer")
+      // // }
+      // let foundLayer = this.state.map.allLayers.find(function(layer) {
+      //   return layer.id === nextProps.mapState.layer && ;
+      //  });
+
+
+      //  console.log("------------------")
+      //  console.log(foundLayer)
+
+      if(this.state.layerName !== "" && this.state.layerName !== nextProps.mapState.layer){
+        that.props.mapState.view.graphics.removeAll();
+        console.log("remove")
+      }
+
+      // if(foundLayer && foundLayer.visable){
+      //   console.log("------------------")
+      // }
+
+      // console.log(this.state.layerName);
+      // if(this.state.layerName != nextProps.mapState.layer){
+      //   that.props.mapState.view.graphics.removeAll();
+      // }
       if(nextProps.mapState.selected && nextProps.mapState.selected.length==0){
         this.setState({graphics:[]})
       }
@@ -274,7 +363,7 @@ class MapView extends React.Component {
               viewProperties={{
 
                   center: [-71.08499252929566, 42.326779376487536],
-                  zoom: 15
+                  zoom: 12
               }}
               onClick = {this.handleOnClick.bind(this)}
               onLoad={this.handleMapLoad.bind(this)}

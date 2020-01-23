@@ -21,6 +21,15 @@ export function updateSelected(selected) {
   };
 }
 
+export function updateNeighborhood(neighborhood) {
+
+  return {
+    type: ActionTypes.UPDATE_NEIGHBORHOOD,
+    neighborhood:neighborhood
+  };
+}
+
+
 export function updateDrawer(open) {
   return {
     type: ActionTypes.UPDATE_DRAWER,

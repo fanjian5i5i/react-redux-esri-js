@@ -275,7 +275,15 @@ class AgeChart extends React.Component{
 
         csvExporter.generateCsv(data);
       }
-
+      shouldComponentUpdate(){
+        console.log("this.shouldComponentUpdate")
+        console.log(this.state);
+        console.log(this.props.mapState)
+        return true
+      }
+      componentDidMount(){
+        this.setState({selected:this.props.selected})
+      }
         render() {
           let that = this;
           let data = this.state.data;

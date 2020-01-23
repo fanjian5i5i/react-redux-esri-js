@@ -55,13 +55,42 @@ function SketchWidgetPaper(props) {
 
   let handleTracts =() =>{
     props.dispatch(updateLayer("tracts"))
+    props.mapState.view.graphics.removeAll();
+    props.dispatch(updateSelected([]))
   }
   let handleNeighborhood =() =>{
-    props.dispatch(updateLayer("neighborhood"))
+    props.dispatch(updateLayer("neighborhood"));
+    props.mapState.view.graphics.removeAll();
+    props.dispatch(updateSelected([]))
   }
 
   
+  // let Selected = (props) => (
+  //   {
+  //   if(props.mapState.layer == "neighborhood"){
+  //     return (
+  //       <Typography component="p">
+  //         Selected Neighborhood:
+  //         {/* Selected Tract(s) : {selected != null && selected.length>1 ?selected.join(", "):selected} */
+  //          props.mapState.neighborhood
+  //         }
+  //       </Typography>
+  //     ) 
+  //   }else if (props.mapState.layer  === "tracts"){
 
+  //     return (
+  //       <Typography component="p">
+  //       Selected Tracts:
+  //       {props.mapState.selected != null ? props.mapState.selected.join(", "): ""}
+  //       </Typography>
+  //     )
+  //   }else{
+  //     return(
+  //       ""
+  //     )
+  //   }
+  // }
+  // )
 
   return (
     <div>
@@ -73,12 +102,28 @@ function SketchWidgetPaper(props) {
               <Button onClick={handleNeighborhood}>
                 Neighborhood
               </Button>
+
             </ButtonGroup>
             <br/>
-        <Typography component="p">
-          {/* Selected Tract(s) : {selected != null && selected.length>1 ?selected.join(", "):selected} */}
-          Selected {props.mapState.layer} : {props.mapState.selected != null ? props.mapState.selected.join(", "): ""}
-        </Typography>
+            <br/>
+        {
+          props.mapState.layer == "neighborhood" ? <Typography component="p">
+            Selected Neighborhood: 
+            {
+              props.mapState.neighborhood
+            }
+          </Typography>
+          :""
+        }
+        {
+          props.mapState.layer == "tracts" ? <Typography component="p">
+            Selected Tracts: 
+            {
+              props.mapState.selected != null ? props.mapState.selected.join(", "): ""
+            }
+          </Typography>
+          :""
+        }
         <br/>
 
 
