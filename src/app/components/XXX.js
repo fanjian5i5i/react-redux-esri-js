@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
 function XXX(props) {
   const classes = useStyles();
   const [nativityOpen, setNativityOpen] = React.useState(false);
+  const [value, setValue] =React.useState(1);
   const [ageOpen, setAgeOpen] = React.useState(true);
   const handleClickCode = (code) => () => {
     let that = this;
@@ -35,20 +36,12 @@ function XXX(props) {
     }
 
   };
+  useEffect(()=>{
+
+  },[])
   return (
     <div>
-      <ListItem button onClick={handleClickCode("nativity")} className={classes.title}>
-          <ListItemText inset primary="XXX" className={classes.title}/>
-            {nativityOpen ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Divider />
-          <Collapse in={nativityOpen} timeout="auto">
-
-              "TRANT TO WORK"
-
-
-          </Collapse>
-          <Divider/>
+              {value}
     </div>
   );
 }

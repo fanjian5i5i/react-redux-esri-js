@@ -63,6 +63,12 @@ function SketchWidgetPaper(props) {
     props.mapState.view.graphics.removeAll();
     props.dispatch(updateSelected([]))
   }
+  let handleCity =() =>{
+    props.dispatch(updateLayer("city"));
+    props.mapState.view.graphics.removeAll();
+    props.dispatch(updateSelected([]))
+  }
+  
 
   
   // let Selected = (props) => (
@@ -102,6 +108,9 @@ function SketchWidgetPaper(props) {
               <Button onClick={handleNeighborhood}>
                 Neighborhood
               </Button>
+              <Button onClick={handleCity}>
+                City
+              </Button>
 
             </ButtonGroup>
             <br/>
@@ -124,6 +133,12 @@ function SketchWidgetPaper(props) {
           </Typography>
           :""
         }
+        {
+          props.mapState.layer == "city" ? <Typography component="p">
+            Citywide
+          </Typography>
+          :""
+        }
         <br/>
 
 
@@ -132,7 +147,7 @@ function SketchWidgetPaper(props) {
           <Grid item>
             <ButtonGroup size="small" aria-label="Small outlined button group">
               <Button onClick={handleGetCensus}>
-                View Selected Tract(s)
+                View Selected
               </Button>
               <Button onClick={handleClear}>
                 Clear Selection

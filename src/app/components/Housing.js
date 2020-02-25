@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
 function Housing(props) {
   const classes = useStyles();
   const [nativityOpen, setNativityOpen] = React.useState(false);
+  const [value, setValue] =React.useState(1);
   const [ageOpen, setAgeOpen] = React.useState(true);
   const handleClickCode = (code) => () => {
     let that = this;
@@ -35,6 +36,14 @@ function Housing(props) {
     }
 
   };
+
+  React.useEffect(()=>{
+    setValue(2);
+    fetch("http://dummy.restapiexample.com/api/v1/employees").then((result)=>{
+      console.log(result)
+    })
+
+  },[])
   return (
     <div>
       <ListItem button onClick={handleClickCode("nativity")} className={classes.title}>
@@ -44,7 +53,7 @@ function Housing(props) {
           <Divider />
           <Collapse in={nativityOpen} timeout="auto">
 
-              "Housing"
+          {value}
 
 
           </Collapse>
