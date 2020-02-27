@@ -32,22 +32,39 @@ class NativityChart extends React.Component{
         console.log(id);
         let that = this;
         let tract = "";
+        let center = { lat: 42.3601, lng: -71.0589 };
+        let values = ["B05002_002E","B05002_014E","B05002_021E"];
+        let Args;
         // let tract = id.length==0 ? id : id.join(',');
         if(id){
-          tract = id.length==0 ? id : id.join(',');
-          let center = { lat: 42.3601, lng: -71.0589 };
-          let values = ["B05002_002E","B05002_014E","B05002_021E"];
-          let Args = {
+
+
+          if(id==='city'){
+            Args = {
               "vintage": 2017,
               "geoHierarchy": {
                 "county": center,
-                "tract": tract
+                // "tract": tract
+                "county subdivision":"07000"
               },
               "sourcePath": ["acs", "acs5"],
               "values": values,
               // "geoResolution": "500k",
             };
-
+          }else{
+            tract = id.length==0 ? id : id.join(',');
+            Args = {
+                "vintage": 2017,
+                "geoHierarchy": {
+                  "county": center,
+                  "tract": tract
+                  // "county subdivision":"07000"
+                },
+                "sourcePath": ["acs", "acs5"],
+                "values": values,
+                // "geoResolution": "500k",
+              };
+          }
 
           census(Args,
             (err, res) => {
@@ -129,8 +146,12 @@ class NativityChart extends React.Component{
         // if(nextState.data != this.state.data){
           // this.setState({data:[1]})
         // }
-          console.log(nextProps.id)
-
+          console.log(nextProps)
+          // switch(nextProps){
+          if(nextProps.mapState.layer === "city"){
+            that.handleGetCensus("city")
+          }
+          // }
           that.handleGetCensus(nextProps.id)
           
           // console.log(this.state.data)

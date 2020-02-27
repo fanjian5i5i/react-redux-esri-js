@@ -104,21 +104,39 @@ class AgeChart extends React.Component{
       handleGetCensus(id){
         let that = this;
         let tract = "";
-
-        if(id){
-        tract = id.length==0 ? id : id.join(',');
         let center = { lat: 42.3601, lng: -71.0589 };
         let values = ["group(B01001)"];
-        let Args = {
-            "vintage": 2017,
-            "geoHierarchy": {
-              "county": center,
-              "tract": tract
-            },
-            "sourcePath": ["acs", "acs5"],
-            "values": values,
-            // "geoResolution": "500k",
-          };
+        let Args;
+        if(id){
+
+
+          if(id === "city"){
+            Args = {
+              "vintage": 2017,
+              "geoHierarchy": {
+                "county": center,
+                "county subdivision":"07000"
+              },
+              "sourcePath": ["acs", "acs5"],
+              "values": values,
+              // "geoResolution": "500k",
+            };
+          }else{
+            tract = id.length==0 ? id : id.join(',');
+            Args = {
+              "vintage": 2017,
+              "geoHierarchy": {
+                "county": center,
+                "tract": tract
+              },
+              "sourcePath": ["acs", "acs5"],
+              "values": values,
+              // "geoResolution": "500k",
+            };
+          }
+        
+        
+        
           census(Args,
             (err, res) => {
               console.log(res);
@@ -164,7 +182,10 @@ class AgeChart extends React.Component{
         }
 
       componentWillReceiveProps(nextProps){
-        console.log(nextProps)
+        if(nextProps.mapState.layer === "city"){
+          this.handleGetCensus("city")
+        }
+        // }
         this.handleGetCensus(nextProps.id)
       }
       processMaleAgeData (data){

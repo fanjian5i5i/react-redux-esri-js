@@ -144,15 +144,14 @@ function SketchWidgetPaper(props) {
 
         <Grid item xs={12} md={12}>
         <Grid container spacing={1} direction="column" alignItems="center">
-          <Grid item>
-            <ButtonGroup size="small" aria-label="Small outlined button group">
-              <Button onClick={handleGetCensus}>
+          <Grid item spacing={2}>
+
+              <Button onClick={handleGetCensus} variant={(props.mapState.selected && props.mapState.selected.length !=0) || props.mapState.layer == "city"? "contained":"outlined"} color="primary">
                 View Selected
               </Button>
-              <Button onClick={handleClear}>
+              <Button variant="outlined" onClick={handleClear} style={{marginLeft:10}}>
                 Clear Selection
               </Button>
-            </ButtonGroup>
             <div><br/></div>
             <Typography component="p">
             Source: U.S. Census Bureau, <br/> 2013 - 2017 American Community Survey (ACS)
