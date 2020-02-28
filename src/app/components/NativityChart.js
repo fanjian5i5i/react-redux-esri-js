@@ -197,7 +197,7 @@ class NativityChart extends React.Component{
         let result = [];
         for (var key in data) {
             if (data.hasOwnProperty(key)) {
-                if(key!='county'&&key!='state'&&key!='tract'){
+                if(key!='county'&&key!='state'&&key!='tract' && key!="county-subdivision"){
                   result.push(data[key])
                 }
             }
