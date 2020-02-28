@@ -184,9 +184,11 @@ class AgeChart extends React.Component{
       componentWillReceiveProps(nextProps){
         if(nextProps.mapState.layer === "city"){
           this.handleGetCensus("city")
+        }else{
+          this.handleGetCensus(nextProps.id)
         }
         // }
-        this.handleGetCensus(nextProps.id)
+        
       }
       processMaleAgeData (data){
 

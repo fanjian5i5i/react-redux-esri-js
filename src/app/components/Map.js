@@ -22,6 +22,7 @@ let Layer = (props) =>{
         console.log(props.map.findLayerById("tracts"))
         props.map.findLayerById("tracts").visible = false;
         props.map.findLayerById("neighborhood").visible = true;
+        props.map.findLayerById("city").visible = false;
         // let l = props.map.findLayerById("tracts");
         // props.map.layers.remove(l)
         //   let fl = new FeatureLayer({
@@ -37,6 +38,7 @@ let Layer = (props) =>{
         console.log(props.map.findLayerById("neighborhood"))
         props.map.findLayerById("tracts").visible = true;
         props.map.findLayerById("neighborhood").visible = false;
+        props.map.findLayerById("city").visible = false;
       //   console.log(props.map.findLayerById("neighborhood"))
       //   // props.map.layers.remove(props.map.findLayerById("neighborhood"))
       //   // let l = new FeatureLayer({
@@ -46,6 +48,11 @@ let Layer = (props) =>{
       //   //   url: "https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/services/Census_2010_Tracts/FeatureServer/0"
       //   // });
       //   // props.map.layers.add(l)
+      }
+      else if(props.layer === "city"){
+        props.map.findLayerById("city").visible = true;
+        props.map.findLayerById("tracts").visible = false;
+        props.map.findLayerById("neighborhood").visible = false;
       }
 
       
@@ -89,6 +96,13 @@ class MapView extends React.Component {
             visible:false
           });
 
+          const layer3 = new FeatureLayer({
+            // URL to the service
+            id: "city",
+            url: "http://gis.cityofboston.gov/arcgis/rest/services/Planning/OpenData/MapServer/9",
+            visible:false
+          });
+
           layer.renderer = {
             type: "simple",  // autocasts as new SimpleRenderer()
             symbol: {
@@ -104,6 +118,20 @@ class MapView extends React.Component {
             }
           };
           layer2.renderer = {
+            type: "simple",  // autocasts as new SimpleRenderer()
+            symbol: {
+              type: "simple-fill",  // autocasts as new SimpleMarkerSymbol()
+
+              color: [0,0,0,0.1],
+              outline: {  // autocasts as new SimpleLineSymbol()
+                width: 2,
+                color: "grey",
+                haloSize: 1.5,
+                haloColor: "white"
+              }
+            }
+          };
+          layer3.renderer = {
             type: "simple",  // autocasts as new SimpleRenderer()
             symbol: {
               type: "simple-fill",  // autocasts as new SimpleMarkerSymbol()
@@ -144,7 +172,7 @@ class MapView extends React.Component {
 
           that.setState({layer:layer})
           that.setState({neighborhood:layer2})
-          map.addMany([layer,layer2]);
+          map.addMany([layer,layer2,layer3]);
 
           // view.on("click", function (event) {
           //   // Search for graphics at the clicked location. View events can be used

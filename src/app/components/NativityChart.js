@@ -150,9 +150,11 @@ class NativityChart extends React.Component{
           // switch(nextProps){
           if(nextProps.mapState.layer === "city"){
             that.handleGetCensus("city")
+          }else{
+            that.handleGetCensus(nextProps.id)
           }
           // }
-          that.handleGetCensus(nextProps.id)
+          
           
           // console.log(this.state.data)
           // console.log(nextState)
