@@ -80,9 +80,14 @@ class Income extends React.Component {
     // console.log(nextState);
     return true
   }
+  componentDidMount(){
+    if(this.props.mapState.selected){
+      this._loadAsyncData(this.props.mapState.selected)
+    }
+  }
   componentDidUpdate(prevProps, prevState){
-    console.log(prevProps.mapState.selected)
-    console.log(this.props.mapState.selected)
+    // console.log(prevProps.mapState.selected)
+    // console.log(this.props.mapState.selected)
     if(prevProps.mapState.selected !== this.props.mapState.selected){
       this._loadAsyncData(this.props.mapState.selected)
     }
