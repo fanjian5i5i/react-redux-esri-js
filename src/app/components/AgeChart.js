@@ -122,7 +122,7 @@ class AgeChart extends React.Component{
               // "geoResolution": "500k",
             };
           }else{
-            tract = id.length==0 ? id : id.join(',');
+            tract = id;
             Args = {
               "vintage": 2017,
               "geoHierarchy": {

@@ -106,8 +106,20 @@ class Income extends React.Component {
         census(Args,
           (err, res) => {
             console.log(res);
-              
-              that.setState({externalData:that.processIncomeData(res[0])})
+            let keys = Object.keys(res[0]);
+            // let keyLength = keys.length - 3; 
+            let tempObj = {}
+            keys.forEach(key =>{
+
+              let temp = 0;
+              for(var i = 0; i< res.length ; i++ ){
+                
+                temp += parseInt(res[i][key]);
+              }
+              tempObj[key]  = temp;
+
+            });
+              that.setState({externalData:that.processIncomeData(tempObj)})
             
             
     
