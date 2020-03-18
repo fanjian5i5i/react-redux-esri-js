@@ -128,7 +128,7 @@ function SketchWidgetPaper(props) {
           props.mapState.layer == "tracts" ? <Typography component="p">
             Selected Tracts: 
             {
-              props.mapState.selected != null ? props.mapState.selected.join(", "): ""
+              props.mapState.selected != null ? props.mapState.selected: ""
             }
           </Typography>
           :""

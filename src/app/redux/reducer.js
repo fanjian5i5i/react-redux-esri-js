@@ -4,7 +4,7 @@ import * as ActionTypes from './actionTypes';
 const initMapState = {
   map:null,
   view:null,
-  selected:null,
+  selected:[],
   layer:"tracts",
   neighborhood:null
   
@@ -54,10 +54,23 @@ function map(state = initMapState, action) {
         map: action.map,
       };
     case ActionTypes.UPDATE_SELECTED:
-      return {
+      // console.log(action.selected);
+      // console.log(action.selected.pop())
+      // let a = Object.assign({},state,{
+      //   selected: [
+      //     ...state.selected,
+      //     action.selected.pop()
+      //   ]
+      // }) ;
+      // console.log(a)
+      // return a
+      return{
         ...state,
-        selected: action.selected,
-      };
+        selected:action.selected
+      }
+      
+      
+      // {s
 
       case ActionTypes.UPDATE_NEIGHBORHOOD:
       return {

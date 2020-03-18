@@ -248,7 +248,7 @@ class MapView extends React.Component {
                 arr.push(feature.attributes.TRACTCE10)
               });
 
-              that.props.dispatch(updateSelected(arr))
+              that.props.dispatch(updateSelected(arr.join()))
             }
           })
         }
@@ -285,7 +285,7 @@ class MapView extends React.Component {
               let graphicsTemp = that.state.graphics;
               let index = graphicsTemp.indexOf(graphic.attributes.TRACTCE10.toString());
               graphicsTemp.splice(index,1);
-              that.props.dispatch(updateSelected(graphicsTemp))
+              that.props.dispatch(updateSelected(graphicsTemp.join()))
               setState({graphics:graphicsTemp});
               
             }else{
@@ -308,7 +308,7 @@ class MapView extends React.Component {
               });
               let graphicsTemp = that.state.graphics;
               graphicsTemp.push(graphic.attributes.TRACTCE10);
-              that.props.dispatch(updateSelected(graphicsTemp))
+              that.props.dispatch(updateSelected(graphicsTemp.join()))
               setState({graphics:graphicsTemp});
               
             }
