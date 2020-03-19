@@ -7,7 +7,8 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+import HighchartsReact from 'highcharts-react-official';
+import IncomeChart from './IncomeChart';
 const census = require("citysdk");
 import { connect } from 'react-redux';
 // const useStyles = makeStyles(theme => ({
@@ -26,7 +27,7 @@ class Income extends React.Component {
     super(props);
     this.state = {
       loading:true,
-      externalData:null,
+      incomeData:null,
       selected:props.mapState.selected,
       houseOpen:true,
       povertyOpen:false
@@ -82,93 +83,61 @@ class Income extends React.Component {
   }
   componentDidMount(){
     if(this.props.mapState.selected){
-      this._loadAsyncData(this.props.mapState.selected)
+      this._loadAsyncData("group(B19001)")
     }
   }
   componentDidUpdate(prevProps, prevState){
     // console.log(prevProps.mapState.selected)
     // console.log(this.props.mapState.selected)
     if(prevProps.mapState.selected !== this.props.mapState.selected){
-      this._loadAsyncData(this.props.mapState.selected)
+      this._loadAsyncData("group(B19001)")
     }
   }
 
-  _loadAsyncData(selected){
+  _loadAsyncData(values){
     let that = this;
-    let tract = this.props.mapState.selected;
     let center = { lat: 42.3601, lng: -71.0589 };
-    let values = ["group(B19001)"];
-    let Args = {
+    let Args = this.props.mapState.layer !== "city" ? {
           "vintage": 2017,
           "geoHierarchy": {
             "county": center,
-            "tract": tract
+            "tract": this.props.mapState.selected
           },
           "sourcePath": ["acs", "acs5"],
-          "values": values,
+          "values": [values],
           // "geoResolution": "500k",
-        };
+        }:{
+          "vintage": 2017,
+          "geoHierarchy": {
+            "county": center,
+            "county subdivision":"07000"
+          },
+          "sourcePath": ["acs", "acs5"],
+          "values": [values],
+        }
         census(Args,
           (err, res) => {
             console.log(res);
             let keys = Object.keys(res[0]);
-            // let keyLength = keys.length - 3; 
+            // let keyLength = keys.length - 3;
             let tempObj = {}
             keys.forEach(key =>{
 
               let temp = 0;
               for(var i = 0; i< res.length ; i++ ){
-                
+
                 temp += parseInt(res[i][key]);
               }
               tempObj[key]  = temp;
 
             });
-              that.setState({externalData:that.processIncomeData(tempObj)})
-            
-            
-    
+              that.setState({incomeData:that.processIncomeData(tempObj)})
+
+
+
           });
-        
+
   }
-  //   console.log(prevState.data)
-  //   if(this.state.data.length!==prevState.data.length){
-
-    
-  //   let that = this;
-  //   let tract = this.props.mapState.selected;
-  //   let center = { lat: 42.3601, lng: -71.0589 };
-  //   let values = ["group(B19001)"];
-  //   console.log(prevProps.mapState.selected);
-  //   let Args = {
-  //     "vintage": 2017,
-  //     "geoHierarchy": {
-  //       "county": center,
-  //       "tract": tract.length==0 ? tract : tract.join(',')
-  //     },
-  //     "sourcePath": ["acs", "acs5"],
-  //     "values": values,
-  //     // "geoResolution": "500k",
-  //   };
-  //   census(Args,
-  //     (err, res) => {
-  //       console.log(res);
-  //       that.setState({data:that.processIncomeData(res[0])})
-
-  //     });
-  //   }
-  //   // console.log(prevProps.mapState.selected);
-  //   // console.log(this.props.mapState.selected);
-
-  //   // let selected = this.props.mapState.selected;
-  //   // let preSelected = prevProps.mapState.selected;
-  //   // if(selected!==prevProps.mapState.selected){
-  //   // console.log(prevState)
-  //   // let preSelected = prevProps.mapState.selected;
-  //   // if(selected && selected != '' && this.state.selected !== preSelected) this.processCensusData(selected);
-  //     // this.processCensusData(preSelected)
-  //   // }
-  // }
 
   handleClickCode(code) {
     let that = this;
@@ -187,41 +156,7 @@ class Income extends React.Component {
 
   }
   render(){
-    let that = this;
-    const options = {
-      title: {
-        text: 'Household Income'
-      },
-      xAxis: {
-        type: 'category',
-        labels: {
-            rotation: -45,
-            style: {
-                fontSize: '13px',
-                fontFamily: 'Verdana, sans-serif'
-            }
-        }
-    },
-      chart: {
-        type: 'column'
-      },
-      series: [{
-        name:"Household Income",
-        data: that.state.externalData
-      }],
-      dataLabels: {
-        enabled: true,
-        rotation: -90,
-        color: '#FFFFFF',
-        align: 'right',
-        format: '{point.y:.1f}', // one decimal
-        y: 10, // 10 pixels down from the top
-        style: {
-            fontSize: '13px',
-            fontFamily: 'Verdana, sans-serif'
-        }
-      }
-    }
+
     return(
     <div>
       <ListItem button onClick={()=>{this.handleClickCode("house")}}>
@@ -231,10 +166,7 @@ class Income extends React.Component {
           <Divider />
           <Collapse in={this.state.houseOpen} timeout="auto">
 
-          <HighchartsReact
-            highcharts={Highcharts}
-            options={options}
-          />
+          <IncomeChart data={this.state.incomeData}/>
 
           </Collapse>
           <Divider/>
@@ -246,10 +178,7 @@ class Income extends React.Component {
           <Divider />
           <Collapse in={this.state.povertyOpen} timeout="auto">
 
-          <HighchartsReact
-            highcharts={Highcharts}
-            options={options}
-          />
+
 
           </Collapse>
     </div>

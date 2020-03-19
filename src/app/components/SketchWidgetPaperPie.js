@@ -4,7 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+import ToggleButtonGroup from '@material-ui/core/ButtonGroup';
 import Divider from '@material-ui/core/Divider';
 
 import { connect } from 'react-redux';
@@ -68,9 +68,9 @@ function SketchWidgetPaper(props) {
     props.mapState.view.graphics.removeAll();
     props.dispatch(updateSelected([]))
   }
-  
 
-  
+
+
   // let Selected = (props) => (
   //   {
   //   if(props.mapState.layer == "neighborhood"){
@@ -81,7 +81,7 @@ function SketchWidgetPaper(props) {
   //          props.mapState.neighborhood
   //         }
   //       </Typography>
-  //     ) 
+  //     )
   //   }else if (props.mapState.layer  === "tracts"){
 
   //     return (
@@ -101,8 +101,8 @@ function SketchWidgetPaper(props) {
   return (
     <div>
       <Paper className={window.innerWidth <= 760 ? classes.foot : classes.root }>
-        <ButtonGroup size="small" aria-label="Small outlined button group">
-              <Button onClick={handleTracts}>
+        <ToggleButtonGroup exclusive size="small" aria-label="Small outlined button group">
+              <Button onClick={handleTracts} selected>
                 Tracts
               </Button>
               <Button onClick={handleNeighborhood}>
@@ -112,12 +112,12 @@ function SketchWidgetPaper(props) {
                 City
               </Button>
 
-            </ButtonGroup>
+            </ToggleButtonGroup>
             <br/>
             <br/>
         {
           props.mapState.layer == "neighborhood" ? <Typography component="p">
-            Selected Neighborhood: 
+            Selected Neighborhood:
             {
               props.mapState.neighborhood
             }
@@ -126,7 +126,7 @@ function SketchWidgetPaper(props) {
         }
         {
           props.mapState.layer == "tracts" ? <Typography component="p">
-            Selected Tracts: 
+            Selected Tracts:
             {
               props.mapState.selected != null ? props.mapState.selected: ""
             }
