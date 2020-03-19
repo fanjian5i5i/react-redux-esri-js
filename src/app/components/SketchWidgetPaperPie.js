@@ -4,16 +4,11 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import ToggleButtonGroup from '@material-ui/core/ButtonGroup';
-import Divider from '@material-ui/core/Divider';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import { connect } from 'react-redux';
 import { updateView,updateMap,updateSelected,updateDrawer,updateLayer } from '../redux/actions';
-
-import {Pie} from 'react-chartjs-2';
-
-import Icon from '@material-ui/core/Icon';
-import IconButton from '@material-ui/core/IconButton';
 
 
 import census from 'citysdk';
@@ -40,7 +35,14 @@ const useStyles = makeStyles(theme => ({
 
 function SketchWidgetPaper(props) {
   const classes = useStyles();
-  const [data, setData] = useState("");
+  const [selection, setSelection] = useState('tracts');
+  const handleToggle = (event, newSelection) => {
+    console.log(newSelection)
+    setSelection(newSelection);
+    props.dispatch(updateLayer(newSelection))
+    props.mapState.view.graphics.removeAll();
+    props.dispatch(updateSelected([]))
+  };
 
 
   let handleClear =()=> {
@@ -101,17 +103,24 @@ function SketchWidgetPaper(props) {
   return (
     <div>
       <Paper className={window.innerWidth <= 760 ? classes.foot : classes.root }>
-        <ToggleButtonGroup exclusive size="small" aria-label="Small outlined button group">
-              <Button onClick={handleTracts} selected>
-                Tracts
-              </Button>
-              <Button onClick={handleNeighborhood}>
-                Neighborhood
-              </Button>
-              <Button onClick={handleCity}>
-                City
-              </Button>
+      <ToggleButtonGroup
+            value={selection}
+            exclusive
+            onChange={handleToggle}
+            aria-label="layer selection"
+            size="small"
 
+          >
+        
+          <ToggleButton value="tracts" aria-label="left aligned">
+              tract
+            </ToggleButton>
+            <ToggleButton value="neighborhood" aria-label="centered">
+              neighborhood
+            </ToggleButton>
+            <ToggleButton value="city" aria-label="right aligned">
+               city
+            </ToggleButton>
             </ToggleButtonGroup>
             <br/>
             <br/>

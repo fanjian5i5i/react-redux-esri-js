@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect , useState} from "react";
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official';
-
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 let IncomeChart = (props) =>{
-
+  const [data,setData] = useState([]);
+  useEffect(()=>{
+    console.log(props.data);
+    setData(props.data)
+  },[props.data])
   const options = {
     title: {
       text: 'Household Income'
@@ -23,7 +32,7 @@ let IncomeChart = (props) =>{
     },
     series: [{
       name:"Household Income",
-      data: props.data
+      data: data?data:[]
     }],
     dataLabels: {
       enabled: true,
@@ -39,10 +48,39 @@ let IncomeChart = (props) =>{
     }
   }
   return (
+    <div>
+      
+      <Paper style={{paddingLeft:80,paddingRight:80}}>
+        <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="right">
+                      Household Income($)
+                    </TableCell>
+                    <TableCell>
+                      Counts
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    props.data?
+                    props.data.map(record=>(
+                      <TableRow key={record[0]}>
+                            <TableCell align="right">{record[0]}</TableCell>
+                            <TableCell>{record[1]}</TableCell>
+                          </TableRow>
+                    ))
+                    :""
+                  }
+                </TableBody>
+        </Table>
+      </Paper>
     <HighchartsReact
       highcharts={Highcharts}
       options={options}
     />
+    </div>
   )
 }
 
