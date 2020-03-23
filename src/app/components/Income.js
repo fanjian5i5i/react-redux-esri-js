@@ -5,10 +5,7 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official';
-import IncomeChart from './IncomeChart';
+import Collapse from '@material-ui/core/Collapse';import IncomeChart from './IncomeChart';
 const census = require("citysdk");
 import { connect } from 'react-redux';
 // const useStyles = makeStyles(theme => ({
@@ -54,16 +51,6 @@ class Income extends React.Component {
   processIncomeData (data){
 
     let result = []
-    // for (var key in data) {
-    //     if (data.hasOwnProperty(key)) {
-
-    //           if(key.indexOf("M")<0&& key.indexOf("A")<0){
-    //             result.push(data[key]);
-    //           }
-
-
-    //     }
-    // }
     let les14999 = parseInt(data["B19001_002E"]) +parseInt(data["B19001_003E"]);
     let les24999 = parseInt(data["B19001_004E"]) +parseInt(data["B19001_005E"]);
     let les34999 = parseInt(data["B19001_006E"]) +parseInt(data["B19001_007E"]);;

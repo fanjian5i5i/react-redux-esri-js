@@ -1,7 +1,10 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import Collapse from '@material-ui/core/Collapse';
+import Divider from '@material-ui/core/Divider';
 
 import HousingChart from './HousingChart';
 const census = require("citysdk");
@@ -14,6 +17,7 @@ class Housing extends React.Component{
     this.state = {
       loading:true,
       data:null,
+      houseOpen:true
     }
   }
 
@@ -85,10 +89,15 @@ class Housing extends React.Component{
   return (
     <div>
       <ListItem >
-          <ListItemText inset primary="Housing Tenure"/>
-          <HousingChart data={this.state.data}/>
+          <ListItemText inset primary="Household Tenure"/>
+            {this.state.houseOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
+          <Divider />
+          <Collapse in={this.state.houseOpen} timeout="auto">
 
+          <HousingChart data={this.state.data}/>
+
+          </Collapse>
     </div>
   )}
 }
