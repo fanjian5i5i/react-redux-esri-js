@@ -24,7 +24,7 @@ import { connect } from 'react-redux';
 import { updateDrawer } from '../redux/actions';
 
 import Population from "./Population";
-import XXX from "./XXX";
+import Education from "./Education";
 import Income from "./Income";
 import Housing from "./Housing";
 
@@ -116,8 +116,8 @@ function ResponsiveDrawer(props) {
     case "population":
       content = <Population/>
       break;
-      case "xxx":
-        content = <XXX/>
+      case "education":
+        content = <Education/>
         break;
         case "income":
           content = <Income/>
