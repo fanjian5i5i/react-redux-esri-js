@@ -77,7 +77,7 @@ function Appbar1(props) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
     console.log(newValue);
-    let indexArr = ["population","education","income","housing"];
+    let indexArr = ["population","education","income","housing","labor"];
     dispatch(changeCategory(indexArr[newValue]))
     
   };
@@ -118,6 +118,11 @@ function Appbar1(props) {
       <MenuItem onClick={()=>handleChange(null,3)}>
         <p>Housing</p>
       </MenuItem>
+      <MenuItem onClick={()=>handleChange(null,4)}>
+        <p>Labor Force</p>
+      </MenuItem>
+
+      
     </Menu>
   );
   const appbar = (
@@ -146,6 +151,9 @@ function Appbar1(props) {
             </Button>
             <Button className={classes.category} onClick={()=>handleChange(null,3)}>
               Housing
+            </Button>
+            <Button className={classes.category} onClick={()=>handleChange(null,4)}>
+              Labor Force
             </Button>
             
                

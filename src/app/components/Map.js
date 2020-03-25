@@ -209,7 +209,7 @@ class MapView extends React.Component {
 
       var query = that.state.neighborhood.createQuery();
       query.geometry = e.mapPoint;
-      query.spatialRelationship = "intersects";
+      // query.spatialRelationship = "intersects";
       query.returnGeometry = true;
       query.outFields = [ "Neighborhood" ];
       that.state.neighborhood.queryFeatures(query).then(result=>{
@@ -237,7 +237,9 @@ class MapView extends React.Component {
           this.props.mapState.view.graphics.add(g);
           var query = that.state.layer.createQuery();
           query.geometry = result.features[0].geometry;
-          query.spatialRelationship = "intersects";
+          // query.spatialRelationship = "intersects";
+          query.distance = 50;
+          query.units = "feet";
           query.returnGeometry = true;
           query.outFields = [ "*" ];
           that.state.layer.queryFeatures(query).then(result=>{

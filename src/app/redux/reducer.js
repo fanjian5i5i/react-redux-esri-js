@@ -12,7 +12,7 @@ const initMapState = {
 
 const initGeneralState = {
   drawerOpen:false,
-  category:"population"
+  category:"labor"
 };
 
 function general(state = initGeneralState, action) {

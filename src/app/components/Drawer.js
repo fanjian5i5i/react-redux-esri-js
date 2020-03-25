@@ -27,6 +27,7 @@ import Population from "./Population";
 import Education from "./Education";
 import Income from "./Income";
 import Housing from "./Housing";
+import Labor from "./Labor";
 
 import NativityChart from './NativityChart';
 import AgeChart from './AgeChart'
@@ -124,6 +125,9 @@ function ResponsiveDrawer(props) {
           break;
           case "housing":
             content = <Housing/>
+            break;
+            case "labor":
+            content = <Labor/>
             break;
     default:
   }
