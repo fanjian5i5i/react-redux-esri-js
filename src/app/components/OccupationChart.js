@@ -7,7 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-let TransportationChart = (props) =>{
+let OccupationChart = (props) =>{
   const [data,setData] = useState([]);
   useEffect(()=>{
     console.log(props.data);
@@ -15,56 +15,47 @@ let TransportationChart = (props) =>{
   },[props.data])
   const options = {
     title: {
-      text: 'Means of Transportation to Work '
+      text: 'Occupation'
     },
-    tooltip: {
-      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-  },
-  accessibility: {
-    point: {
-        valueSuffix: '%'
-    }
-    },
-    plotOptions: {
-      pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-              enabled: true,
-              format: '<b>{point.name}</b>: {point.y}'
+    xAxis: {
+      type: 'category',
+      labels: {
+          rotation: -45,
+          style: {
+              fontSize: '13px',
+              fontFamily: 'Verdana, sans-serif'
           }
       }
-    },
+  },
     chart: {
-      type: 'pie'
+      type: 'column'
     },
     series: [{
-      name:"Means of Transportation to Work",
-      colorByPoint: true,
-      data: props.data
+      name:"Occupation",
+      data: data?data:[]
     }],
-    // dataLabels: {
-    //   enabled: true,
-    //   rotation: -90,
-    //   color: '#FFFFFF',
-    //   align: 'right',
-    //   format: '{point.y:.1f}', // one decimal
-    //   y: 10, // 10 pixels down from the top
-    //   style: {
-    //       fontSize: '13px',
-    //       fontFamily: 'Verdana, sans-serif'
-    //   }
-    // }
+    dataLabels: {
+      enabled: true,
+      rotation: -90,
+      color: '#FFFFFF',
+      align: 'right',
+      format: '{point.y}', // one decimal
+      y: 20, // 10 pixels down from the top
+      style: {
+          fontSize: '13px',
+          fontFamily: 'Verdana, sans-serif'
+      }
+    }
   }
   return (
     <div>
       
-      <Paper style={{paddingLeft:60,paddingRight:60}}>
+      <Paper style={{paddingLeft:80,paddingRight:80}}>
         <Table size="small">
                 <TableHead>
                   <TableRow>
                     <TableCell align="right">
-                    Means of Transportation to Work 
+                      Occupation
                     </TableCell>
                     <TableCell>
                       Counts
@@ -94,4 +85,4 @@ let TransportationChart = (props) =>{
 }
 
 
-export default TransportationChart
+export default OccupationChart

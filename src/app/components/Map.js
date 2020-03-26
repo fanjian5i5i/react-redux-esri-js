@@ -4,6 +4,7 @@ import { Map,loadModules } from '@esri/react-arcgis';
 import { connect } from 'react-redux';
 import { updateView,updateMap,updateSelected,updateNeighborhood } from '../redux/actions';
 
+import lookup from '../lib/neighborhood_tract';
 
 
 const styles = {

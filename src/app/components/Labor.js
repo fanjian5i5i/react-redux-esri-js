@@ -7,6 +7,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import TransportationChart from './TransportationChart';
+import OccupationChart from './OccupationChart';
 const census = require("citysdk");
 import { connect } from 'react-redux';
 // const useStyles = makeStyles(theme => ({
@@ -28,6 +29,7 @@ class Labor extends React.Component {
       transData:null,
       selected:props.mapState.selected,
       TransOpen:true,
+      occupationData:null,
       occupationOpen:false
     }
   }
@@ -65,20 +67,75 @@ class Labor extends React.Component {
 
     return [["Car, truck, or van",temp1],["Public transportation",temp2],["Bicycle",temp3],["Walked",temp4],["Other, or Work at Home",temp5]];
   }
+
   processOccupationData (data){
 
-    let result = []
-    let les14999 = parseInt(data["B19001_002E"]) +parseInt(data["B19001_003E"]);
-    let les24999 = parseInt(data["B19001_004E"]) +parseInt(data["B19001_005E"]);
-    let les34999 = parseInt(data["B19001_006E"]) +parseInt(data["B19001_007E"]);;
-    let les49999 = parseInt(data["B19001_008E"]) +parseInt(data["B19001_009E"])+parseInt(data["B19001_010E"]);
-    let les74999 = parseInt(data["B19001_011E"]) +parseInt(data["B19001_012E"]);
-    let les99999 = parseInt(data["B19001_013E"])
-    let les149999 = parseInt(data["B19001_014E"]) +parseInt(data["B19001_015E"]);
-    let other = parseInt(data["B19001_016E"]) +parseInt(data["B19001_017E"]);;
+    //Management
+    //C24010_005E + C24010_041E
+    let temp1 = parseInt(data["C24010_005E"]) +parseInt(data["C24010_041E"]);
 
-    console.log(other)
-    return [["0-14,999",les14999],["15,000-24,999",les24999],["25,000-34,999",les34999],["35,000-49,999",les49999],["50,000-74,999",les74999],["75,000-99,999",les99999],["99,999-149,999",les149999],[">150,000",other]];
+    //Business and financial operations, legal
+    //C24010_006E + C24010_042E + C24010_013E + C24010_049E
+    let temp2 = parseInt(data["C24010_006E"]) +parseInt(data["C24010_042E"])+parseInt(data["C24010_013E"])+parseInt(data["C24010_049E"])
+    //Computer, engineering, and science
+    //C24010_007E + C24010_043E
+    let temp3 = parseInt(data["C24010_007E"]) +parseInt(data["C24010_043E"]);
+    //Community and social service, arts, design, entertainment, sports, and media
+    //C24010_012E + C24010_048E + C24010_015E + C24010_051E
+    let temp4 = parseInt(data["C24010_012E"]) +parseInt(data["C24010_048E"])+parseInt(data["C24010_015E"])+parseInt(data["C24010_051E"])
+
+    //Education, training, and library
+    //C24010_014E + C24010_050E
+    let temp5 = parseInt(data["C24010_014E"]) +parseInt(data["C24010_050E"]);
+
+    //Healthcare practitioners and technical
+    //C24010_016E + C24010_052E
+    let temp6 = parseInt(data["C24010_016E"]) +parseInt(data["C24010_052E"]);
+
+    //Healthcare support, personal care and service
+    //C24010_020E + C24010_056E + C24010_026E + C24010_062E
+    let temp7 = parseInt(data["C24010_020E"]) +parseInt(data["C24010_056E"])+parseInt(data["C24010_026E"])+parseInt(data["C24010_062E"])
+
+    //Protective service
+    //C24010_021E + C24010_057E
+    
+    let temp8 = parseInt(data["C24010_021E"]) +parseInt(data["C24010_057E"]);
+
+    //Food preparation and serving
+    // C24010_024E + C24010_060E
+    let temp9 = parseInt(data["C24010_024E"]) +parseInt(data["C24010_060E"]);
+    //Building and grounds cleaning and maintenance
+    //C24010_025E + C24010_061E
+    let temp10 = parseInt(data["C24010_025E"]) +parseInt(data["C24010_061E"]);
+    //Sales, office and administrative support
+    //C24010_027E + C24010_063E
+    let temp11 = parseInt(data["C24010_027E"]) +parseInt(data["C24010_063E"]);
+    //Natural resources, construction, and maintenance
+    //C24010_030E + C24010_066E
+    let temp12 = parseInt(data["C24010_030E"]) +parseInt(data["C24010_066E"]);
+    //Production, transportation, and material moving
+    //C24010_034E + C24010_070E
+    let temp13 = parseInt(data["C24010_034E"]) +parseInt(data["C24010_070E"]);
+
+
+
+
+
+    return [
+      ["Management",temp1],
+      ["Business and financial operations, legal",temp2],
+      ["Computer, engineering, and science",temp3],
+      ["Community and social service, arts, design, entertainment, sports, and media",temp4],
+      ["Education, training, and library",temp5],
+      ["Healthcare practitioners and technical",temp6],
+      ["Healthcare support, personal care and service",temp7],
+      ["Protective service",temp8],
+      ["Food preparation and serving",temp9],
+      ["Building and grounds cleaning and maintenance",temp10],
+      ["Sales, office and administrative support",temp11],
+      ["Natural resources, construction, and maintenance",temp12],
+      ["Production, transportation, and material moving",temp13]
+  ];
   }
   shouldComponentUpdate(nextProps, nextState){
     // console.log(this.state);
@@ -88,13 +145,16 @@ class Labor extends React.Component {
   componentDidMount(){
     if(this.props.mapState.selected){
       this._loadAsyncData("group(B08301)","trans")
+      this._loadAsyncData("group(C24010)","occupation")
     }
   }
   componentDidUpdate(prevProps, prevState){
     // console.log(prevProps.mapState.selected)
     // console.log(this.props.mapState.selected)
     if(prevProps.mapState.selected !== this.props.mapState.selected){
-      this._loadAsyncData("group(B08301)","trans")
+      this._loadAsyncData("group(B08301)","trans");
+      this._loadAsyncData("group(C24010)","occupation")
+
     }
   }
 
@@ -159,11 +219,11 @@ class Labor extends React.Component {
   handleClickCode(code) {
     let that = this;
     switch (code) {
-      case "house":
+      case "transportation":
         // setNativityOpen(!nativityOpen);
         this.setState({TransOpen:!this.state.TransOpen})
         break;
-      case "poverty":
+      case "occupation":
         // setAgeOpen(!ageOpen);
         this.setState({occupationOpen:!this.state.occupationOpen})
         break;
@@ -195,7 +255,7 @@ class Labor extends React.Component {
           <Divider />
           <Collapse in={this.state.occupationOpen} timeout="auto">
 
-
+          <OccupationChart data={this.state.occupationData}/>
 
           </Collapse>
     </div>
