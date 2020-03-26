@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
-import HousingChart from './HousingChart';
+import TransportationChart from './TransportationChart';
 const census = require("citysdk");
 import { connect } from 'react-redux';
 // const useStyles = makeStyles(theme => ({
@@ -183,7 +183,7 @@ class Labor extends React.Component {
           <Divider />
           <Collapse in={this.state.TransOpen} timeout="auto">
 
-          <HousingChart data={this.state.transData}/>
+          <TransportationChart data={this.state.transData}/>
 
           </Collapse>
           <Divider/>
