@@ -203,6 +203,7 @@ class MapView extends React.Component {
     handleOnClick(e){
       var that = this;
 
+
       if(this.props.mapState.layer === "neighborhood"){
       this.props.mapState.view.graphics.removeAll();
       this.props.dispatch(updateSelected([]))
@@ -236,24 +237,30 @@ class MapView extends React.Component {
             }
           });
           this.props.mapState.view.graphics.add(g);
-          var query = that.state.layer.createQuery();
-          query.geometry = result.features[0].geometry;
-          // query.spatialRelationship = "intersects";
-          query.distance = 50;
-          query.units = "feet";
-          query.returnGeometry = true;
-          query.outFields = [ "*" ];
-          that.state.layer.queryFeatures(query).then(result=>{
-            console.log(result);
-            if(result.features.length>0){
-              let arr = [];
-              result.features.forEach(feature=>{
-                arr.push(feature.attributes.TRACTCE10)
-              });
+          console.log(result.features[0].attributes.Neighborhood)
+          // let selectedTracts = lookup.filter(record=>{record.name == result.features[0].attributes.Neighborhood});
+          let selectedTracts = lookup.filter(function(record){return record.name===result.features[0].attributes.Neighborhood})
+          // console.log(selectedTracts[0])
+          that.props.dispatch(updateSelected(selectedTracts[0].tracts.join()))
+          //spatial query will not work cuz boundaries dont line up
+          // var query = that.state.layer.createQuery();
+          // query.geometry = result.features[0].geometry;
+          // // query.spatialRelationship = "intersects";
+          // query.distance = 50;
+          // query.units = "feet";
+          // query.returnGeometry = true;
+          // query.outFields = [ "*" ];
+          // that.state.layer.queryFeatures(query).then(result=>{
+          //   console.log(result);
+          //   if(result.features.length>0){
+          //     let arr = [];
+          //     result.features.forEach(feature=>{
+          //       arr.push(feature.attributes.TRACTCE10)
+          //     });
 
-              that.props.dispatch(updateSelected(arr.join()))
-            }
-          })
+          //     that.props.dispatch(updateSelected(arr.join()))
+          //   }
+          // })
         }
 
 
