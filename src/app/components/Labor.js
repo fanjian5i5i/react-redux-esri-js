@@ -8,6 +8,11 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import TransportationChart from './TransportationChart';
 import OccupationChart from './OccupationChart';
+
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import PieChart from './PieChart';
+import DownloadCSV from './DownloadCSV';
+import LoadingBlock from './LoadingBlock';
 const census = require("citysdk");
 import { connect } from 'react-redux';
 // const useStyles = makeStyles(theme => ({
@@ -159,6 +164,7 @@ class Labor extends React.Component {
   }
 
   _loadAsyncData(values,category){
+    this.setState({loading:true})
     let that = this;
     let center = { lat: 42.3601, lng: -71.0589 };
     let Args = this.props.mapState.layer !== "city" ? {
@@ -208,7 +214,7 @@ class Labor extends React.Component {
 
               }
 
-              
+              that.setState({loading:false})
 
 
 
@@ -243,8 +249,19 @@ class Labor extends React.Component {
           <Divider />
           <Collapse in={this.state.TransOpen} timeout="auto">
 
-          <TransportationChart data={this.state.transData}/>
-
+          
+          {!this.state.loading? 
+          <div>
+          <PieChart data={this.state.transData} title="Means of Transportation to Work"/>
+          <ListItem>
+                <ListItemIcon>
+                <DownloadCSV data={this.state.transData} title={"Means of Transportation to Work"} selected={this.props.mapState.selected}/>
+                </ListItemIcon>
+                <ListItemText primary="doanload csv" />
+              </ListItem>
+          </div>
+          :
+          <LoadingBlock/>}
           </Collapse>
           <Divider/>
           <ListItem button onClick={()=>{this.handleClickCode("occupation")}}>
@@ -254,8 +271,18 @@ class Labor extends React.Component {
           </ListItem>
           <Divider />
           <Collapse in={this.state.occupationOpen} timeout="auto">
-
-          <OccupationChart data={this.state.occupationData}/>
+          {!this.state.loading? 
+          <div>
+          <OccupationChart data={this.state.transData}/>
+          <ListItem>
+                <ListItemIcon>
+                <DownloadCSV data={this.state.transData} title={"Occupation"} selected={this.props.mapState.selected}/>
+                </ListItemIcon>
+                <ListItemText primary="doanload csv" />
+              </ListItem>
+          </div>
+          :
+          <LoadingBlock/>}
 
           </Collapse>
     </div>

@@ -109,6 +109,7 @@ function SketchWidgetPaper(props) {
             onChange={handleToggle}
             aria-label="layer selection"
             size="small"
+            data-testid="toggleBtn"
 
           >
         
@@ -153,11 +154,14 @@ function SketchWidgetPaper(props) {
 
         <Grid item xs={12} md={12}>
         <Grid container spacing={1} direction="column" alignItems="center">
-          <Grid item spacing={2}>
-
-              <Button onClick={handleGetCensus} variant={(props.mapState.selected && props.mapState.selected.length !=0) || props.mapState.layer == "city"? "contained":"outlined"} color="primary">
-                View Selected
-              </Button>
+          <Grid item>
+              {(props.mapState.selected && props.mapState.selected.length !=0) || props.mapState.layer == "city"? 
+              <Button onClick={handleGetCensus} variant={"contained"} color="primary">
+              View Selected
+            </Button>:
+            <Button disabled>
+            View Selected
+          </Button>}
               <Button variant="outlined" onClick={handleClear} style={{marginLeft:10}}>
                 Clear Selection
               </Button>

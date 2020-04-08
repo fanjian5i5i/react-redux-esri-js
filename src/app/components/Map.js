@@ -18,37 +18,21 @@ let Layer = (props) =>{
   React.useEffect(() => {
     
     loadModules(["esri/widgets/Home","esri/layers/FeatureLayer"]).then(([FeatureLayer]) =>{
-
+      console.log(props.layer)
       if(props.layer === "neighborhood"){
         console.log(props.map.findLayerById("tracts"))
         props.map.findLayerById("tracts").visible = false;
         props.map.findLayerById("neighborhood").visible = true;
         props.map.findLayerById("city").visible = false;
-        // let l = props.map.findLayerById("tracts");
-        // props.map.layers.remove(l)
-        //   let fl = new FeatureLayer({
-        //   // URL to the service
-        //   id: "neighborhood",
-        //   url: "http://mapservices.bostonredevelopmentauthority.org/arcgis/rest/services/Maps/Neighborhoods_tract/MapServer/0"
-        // });
-        
-        // // props.map.add(fl);
-        // console.log(fl);
-        // console.log(props.map.add(fl))
-      }else if(props.layer === "tracts"){
-        console.log(props.map.findLayerById("neighborhood"))
-        props.map.findLayerById("tracts").visible = true;
-        props.map.findLayerById("neighborhood").visible = false;
-        props.map.findLayerById("city").visible = false;
-      //   console.log(props.map.findLayerById("neighborhood"))
-      //   // props.map.layers.remove(props.map.findLayerById("neighborhood"))
-      //   // let l = new FeatureLayer({
-      //   //   // URL to the service
-      //   //   id:"neighborhood",
 
-      //   //   url: "https://services.arcgis.com/sFnw0xNflSi8J0uh/arcgis/rest/services/Census_2010_Tracts/FeatureServer/0"
-      //   // });
-      //   // props.map.layers.add(l)
+      }else if(props.layer === "tracts"){
+        if(props.map.findLayerById("tracts") ){
+          props.map.findLayerById("tracts").visible = true
+          props.map.findLayerById("neighborhood").visible = false;
+          props.map.findLayerById("city").visible = false;
+        }
+        
+
       }
       else if(props.layer === "city"){
         props.map.findLayerById("city").visible = true;
@@ -338,9 +322,6 @@ class MapView extends React.Component {
     }
     componentDidUpdate(prevProps,prevState){
       let that = this;
-      // this.setState({layerName:this.props.mapState.layer})
-      console.log(prevProps.mapState.layer)
-      console.log(this.props.mapState.layer);
       if(prevProps.mapState.layer!==this.props.mapState.layer){
         this.setState({layerName:that.props.mapState.layer})
       }

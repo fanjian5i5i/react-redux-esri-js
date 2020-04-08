@@ -5,8 +5,10 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
-
-import AttainmentChart from './AttainmentChart';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import DownloadCSV from './DownloadCSV';
+import LoadingBlock from './LoadingBlock'
+import PieChart from './PieChart';
 const census = require("citysdk");
 import { connect } from 'react-redux';
 
@@ -64,11 +66,12 @@ class Education extends React.Component{
 
 
 
-    return [{name:"Less than high school",y:temp1},{name:"High school graduate",y:temp2},
-    {name:"Some colleges or associate's degree",y:temp3},{name:"Bachelor's degree",y:temp4},
-    {name:"Graduate or professional degree",y:temp5}];
+    return [["Less than high school",temp1],["High school graduate",temp2],
+    ["Some colleges or associate's degree",temp3],["Bachelor's degree",temp4],
+    ["Graduate or professional degree",temp5]];
   } 
   _loadAsyncData(values){
+    this.setState({loading:true})
     let that = this;
     let center = { lat: 42.3601, lng: -71.0589 };
     let Args = this.props.mapState.layer !== "city" ? {
@@ -106,7 +109,7 @@ class Education extends React.Component{
 
             });
               that.setState({data:that.processEducationData(tempObj)})
-
+              that.setState({loading:false})
 
 
           });
@@ -122,9 +125,18 @@ class Education extends React.Component{
           </ListItem>
           <Divider />
           <Collapse in={this.state.educationOpen} timeout="auto">
-
-          <AttainmentChart data={this.state.data}/>
-
+          {!this.state.loading? 
+          <div>
+          <PieChart data={this.state.data} title={"Educational Attainment"}/>
+          <ListItem>
+                <ListItemIcon>
+                <DownloadCSV data={this.state.data} title={"Educational Attainment"} selected={this.props.mapState.selected}/>
+                </ListItemIcon>
+                <ListItemText primary="doanload csv" />
+              </ListItem>
+          </div>
+          :
+          <LoadingBlock/>}
           </Collapse>
     </div>
   )}

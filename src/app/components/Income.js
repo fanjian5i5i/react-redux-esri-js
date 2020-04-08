@@ -8,6 +8,11 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import IncomeChart from './IncomeChart';
 import PovertyChart from './PovertyChart';
+
+
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import DownloadCSV from './DownloadCSV';
+import LoadingBlock from './LoadingBlock';
 const census = require("citysdk");
 import { connect } from 'react-redux';
 // const useStyles = makeStyles(theme => ({
@@ -130,6 +135,7 @@ class Income extends React.Component {
 
   _loadAsyncData(values,category){
     let that = this;
+    that.setState({loading:true})
     let center = { lat: 42.3601, lng: -71.0589 };
     let Args = this.props.mapState.layer !== "city" ? {
           "vintage": 2017,
@@ -178,7 +184,7 @@ class Income extends React.Component {
 
               }
 
-
+              that.setState({loading:false})
 
           });
 
@@ -210,9 +216,19 @@ class Income extends React.Component {
           </ListItem>
           <Divider />
           <Collapse in={this.state.houseOpen} timeout="auto">
-
-          <IncomeChart data={this.state.incomeData}/>
-
+          {!this.state.loading? 
+          <div>
+            <IncomeChart data={this.state.incomeData} title={"Household Income"}/>
+              
+              <ListItem>
+                <ListItemIcon>
+                <DownloadCSV data={this.state.incomeData} title={"Household Income"} selected={this.props.mapState.selected}/>
+                </ListItemIcon>
+                <ListItemText primary="doanload csv" />
+              </ListItem>
+              </div>
+          :
+          <LoadingBlock/>}
           </Collapse>
           <Divider/>
           <ListItem button onClick={()=>{this.handleClickCode("poverty")}}>
@@ -221,10 +237,20 @@ class Income extends React.Component {
             {this.state.povertyOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Divider />
-          <Collapse in={this.state.povertyOpen} timeout="auto">
-
-          <PovertyChart data={this.state.povertyData}/>                                 
-
+          <Collapse in={this.state.povertyOpen} timeout="auto">                       
+          {!this.state.loading? 
+          <div>
+            <PovertyChart data={this.state.povertyData} title={"Poverty Rate"}/>
+              
+              <ListItem>
+                <ListItemIcon>
+                <DownloadCSV data={this.state.incomeData} title={"Poverty Rate"} selected={this.props.mapState.selected}/>
+                </ListItemIcon>
+                <ListItemText primary="doanload csv" />
+              </ListItem>
+              </div>
+          :
+          <LoadingBlock/>}
           </Collapse>
     </div>
     )

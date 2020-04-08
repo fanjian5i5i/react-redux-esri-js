@@ -6,8 +6,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import PieChart from './PieChart';
-import OccupationChart from './OccupationChart';
+import DownloadCSV from './DownloadCSV';
+import LoadingBlock from './LoadingBlock';
 const census = require("citysdk");
 import { connect } from 'react-redux';
 // const useStyles = makeStyles(theme => ({
@@ -25,12 +27,12 @@ class Labor extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      loading:true,
       raceData:null,
       selected:props.mapState.selected,
-      TransOpen:true,
       genderData:null,
-      genderOpen:false
+      genderOpen:false,
+      ageOpen:true,
+      loading:false
     }
   }
   processCensusData(selected){
@@ -150,7 +152,7 @@ class Labor extends React.Component {
     return true
   }
   componentDidMount(){
-    if(this.props.mapState.selected){
+    if(this.props.mapState.selected && this.props.mapState.selected.length!=0){
       this._loadAsyncData("group(B03002)","race");
       this._loadAsyncData("group(B01001)","gender");
       this._loadAsyncData("group(B05002)","nativity");
@@ -161,18 +163,22 @@ class Labor extends React.Component {
     // console.log(prevProps.mapState.selected)
     // console.log(this.props.mapState.selected)
     if(prevProps.mapState.selected !== this.props.mapState.selected){
+      if(this.props.mapState.selected.length!=0){
       this._loadAsyncData("group(B03002)","race");
       this._loadAsyncData("group(B01001)","gender");
       this._loadAsyncData("group(B05002)","nativity");
       this._loadAsyncData("group(B01001)","age");
-      
-      
-      
-
+      }else if(this.props.mapState.layer == "city"){
+        this._loadAsyncData("group(B03002)","race");
+      this._loadAsyncData("group(B01001)","gender");
+      this._loadAsyncData("group(B05002)","nativity");
+      this._loadAsyncData("group(B01001)","age");
+      }
     }
   }
 
   _loadAsyncData(values,category){
+    this.setState({loading:true})
     let that = this;
     let center = { lat: 42.3601, lng: -71.0589 };
     let Args = this.props.mapState.layer !== "city" ? {
@@ -229,6 +235,8 @@ class Labor extends React.Component {
 
               }
 
+              that.setState({loading:false})
+
               
 
 
@@ -272,9 +280,22 @@ class Labor extends React.Component {
         </ListItem>
         <Divider />
         <Collapse in={this.state.ageOpen} timeout="auto">
+          {!this.state.loading? 
+          <div>
+            <PieChart data={this.state.ageData} title={"Age"}/>
+              
+              <ListItem>
+                <ListItemIcon>
+                <DownloadCSV data={this.state.ageData} title={"Population By Age"} selected={this.props.mapState.selected}/>
+                </ListItemIcon>
+                <ListItemText primary="doanload csv" />
+              </ListItem>
+              </div>
+          :
+          <LoadingBlock/>}
 
-        <PieChart data={this.state.ageData} title={"Age"}/>
-
+        
+        
         </Collapse>
         <Divider />
         <ListItem button onClick={()=>{this.handleClickCode("race")}}>
@@ -284,9 +305,18 @@ class Labor extends React.Component {
           </ListItem>
           <Divider />
           <Collapse in={this.state.raceOpen} timeout="auto">
-
+          {!this.state.loading? 
+          <div>
           <PieChart data={this.state.raceData} title={"Race/Ethnicity"}/>
-
+          <ListItem>
+                <ListItemIcon>
+                <DownloadCSV data={this.state.raceData} title={"Race/Ethnicity"} selected={this.props.mapState.selected}/>
+                </ListItemIcon>
+                <ListItemText primary="doanload csv" />
+              </ListItem>
+          </div>
+          :
+          <LoadingBlock/>}
           </Collapse>
           <Divider/>
           <ListItem button onClick={()=>{this.handleClickCode("gender")}}>
@@ -295,10 +325,20 @@ class Labor extends React.Component {
             {this.state.genderOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Divider />
+          
           <Collapse in={this.state.genderOpen} timeout="auto">
-
+          {!this.state.loading? 
+          <div>
           <PieChart data={this.state.genderData} title={"Gender"}/>
-
+          <ListItem>
+                <ListItemIcon>
+                <DownloadCSV data={this.state.genderData} title={"Gender"} selected={this.props.mapState.selected}/>
+                </ListItemIcon>
+                <ListItemText primary="doanload csv" />
+              </ListItem>
+          </div>
+          :
+          <LoadingBlock/>}
           </Collapse>
           <Divider/>
           <ListItem button onClick={()=>{this.handleClickCode("nativity")}}>
@@ -308,9 +348,18 @@ class Labor extends React.Component {
           </ListItem>
           <Divider />
           <Collapse in={this.state.nativityOpen} timeout="auto">
-
+          {!this.state.loading? 
+          <div>
           <PieChart data={this.state.nativityData} title={"Nativity"}/>
-
+          <ListItem>
+                <ListItemIcon>
+                <DownloadCSV data={this.state.nativityData} title={"Nativity"} selected={this.props.mapState.selected}/>
+                </ListItemIcon>
+                <ListItemText primary="doanload csv" />
+              </ListItem>
+          </div>
+          :
+          <LoadingBlock/>}
           </Collapse>
     </div>
     )

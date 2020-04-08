@@ -6,7 +6,12 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
 
-import HousingChart from './HousingChart';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import PieChart from './PieChart';
+import DownloadCSV from './DownloadCSV';
+import LoadingBlock from './LoadingBlock';
+
+
 const census = require("citysdk");
 import { connect } from 'react-redux';
 
@@ -38,10 +43,11 @@ class Housing extends React.Component{
     let temp2 = parseInt(data["B25003_003E"]);
     // let temp3 = parseInt(data["B19001_006E"]) +parseInt(data["B19001_007E"]);;
 
-    return [{name:"Owner Occupied",y:temp1},{name:"Renter Occupied",y:temp2}];
+    return [["Owner Occupied",temp1],["Renter Occupied",temp2]];
   } 
   _loadAsyncData(values){
     let that = this;
+    that.setState({loading:true})
     let center = { lat: 42.3601, lng: -71.0589 };
     let Args = this.props.mapState.layer !== "city" ? {
           "vintage": 2017,
@@ -78,7 +84,7 @@ class Housing extends React.Component{
 
             });
               that.setState({data:that.processIncomeData(tempObj)})
-
+              that.setState({loading:false})
 
 
           });
@@ -95,8 +101,20 @@ class Housing extends React.Component{
           <Divider />
           <Collapse in={this.state.houseOpen} timeout="auto">
 
-          <HousingChart data={this.state.data}/>
-
+          
+          {!this.state.loading? 
+          <div>
+            <PieChart data={this.state.data} title={"Household Tenure"}/>
+              
+              <ListItem>
+                <ListItemIcon>
+                <DownloadCSV data={this.state.data} title={"Household Tenure"} selected={this.props.mapState.selected}/>
+                </ListItemIcon>
+                <ListItemText primary="doanload csv" />
+              </ListItem>
+              </div>
+          :
+          <LoadingBlock/>}
           </Collapse>
     </div>
   )}

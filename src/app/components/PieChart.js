@@ -71,6 +71,8 @@ let PieChart = (props) =>{
                     </TableCell>
                   </TableRow>
                 </TableHead>
+
+
                 <TableBody>
                   {
                     props.data?
@@ -80,7 +82,7 @@ let PieChart = (props) =>{
                             <TableCell>{record[1]}</TableCell>
                           </TableRow>
                     ))
-                    :""
+                    :<TableRow></TableRow>
                   }
                 </TableBody>
         </Table>
